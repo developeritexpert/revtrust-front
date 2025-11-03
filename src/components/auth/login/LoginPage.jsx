@@ -15,6 +15,7 @@ import {
   Group,
   Anchor,
   Stack,
+  Loader,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconLock, IconMail } from '@tabler/icons-react';
@@ -22,7 +23,23 @@ import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
 import { API_URL } from '../../../utils/apiUrl';
 
-// ✅ Extracted content that uses useSearchParams
+// Loading fallback component
+function LoadingFallback() {
+  return (
+    <Container size={460} my={80}>
+      <Box className="flex min-h-[500px] items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <Loader size="lg" />
+          <Text c="dimmed" size="sm">
+            Loading login page...
+          </Text>
+        </div>
+      </Box>
+    </Container>
+  );
+}
+
+// Login content component
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -65,6 +82,7 @@ function LoginContent() {
           message: 'You do not have permission to access the admin panel',
           color: 'red',
         });
+        setLoading(false);
         return;
       }
 
@@ -85,86 +103,93 @@ function LoginContent() {
         message: err?.message || 'Invalid credentials. Please try again.',
         color: 'red',
       });
-    } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Container size={460} my={80}>
-      <Box mb="xl">
-        <Title ta="center" order={1}>
-          Welcome Back
-        </Title>
-        <Text c="dimmed" size="sm" ta="center" mt={5}>
-          Sign in to access your admin dashboard
-        </Text>
-      </Box>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-black dark:to-gray-900">
+      <Container size={460} py={80}>
+        <Box mb="xl">
+          <Title ta="center" order={1} className="text-gray-900 dark:text-white">
+            Welcome Back
+          </Title>
+          <Text c="dimmed" size="sm" ta="center" mt={5}>
+            Sign in to access your admin dashboard
+          </Text>
+        </Box>
 
-      <Paper withBorder shadow="lg" p={40} radius="md">
-        <form onSubmit={handleLogin}>
-          <Stack gap="md">
-            <TextInput
-              label="Email Address"
-              placeholder="admin@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.currentTarget.value)}
-              leftSection={<IconMail size={16} />}
-              required
-              disabled={loading}
-              size="md"
-            />
-
-            <PasswordInput
-              label="Password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.currentTarget.value)}
-              leftSection={<IconLock size={16} />}
-              required
-              disabled={loading}
-              size="md"
-            />
-
-            <Group justify="space-between">
-              <Checkbox
-                label="Remember me"
-                checked={remember}
-                onChange={(e) => setRemember(e.currentTarget.checked)}
+        <Paper withBorder shadow="lg" p={40} radius="md" className="border-gray-200 dark:border-gray-700">
+          <form onSubmit={handleLogin}>
+            <Stack gap="md">
+              <TextInput
+                label="Email Address"
+                placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.currentTarget.value)}
+                leftSection={<IconMail size={16} />}
+                required
                 disabled={loading}
+                size="md"
               />
-              <Anchor size="sm" href="/forgot-password">
-                Forgot password?
-              </Anchor>
-            </Group>
 
-            <Button
-              type="submit"
-              fullWidth
-              size="md"
-              loading={loading}
-              loaderProps={{ type: 'dots' }}
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
-            </Button>
-          </Stack>
-        </form>
+              <PasswordInput
+                label="Password"
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.currentTarget.value)}
+                leftSection={<IconLock size={16} />}
+                required
+                disabled={loading}
+                size="md"
+              />
 
-        <Text c="dimmed" size="sm" ta="center" mt="xl">
-          Don't have an account?{' '}
-          <Anchor size="sm" href="/register">
-            Create account
+              <Group justify="space-between">
+                <Checkbox
+                  label="Remember me"
+                  checked={remember}
+                  onChange={(e) => setRemember(e.currentTarget.checked)}
+                  disabled={loading}
+                />
+                <Anchor size="sm" href="/forgot-password" className="hover:underline">
+                  Forgot password?
+                </Anchor>
+              </Group>
+
+              <Button
+                type="submit"
+                fullWidth
+                size="md"
+                loading={loading}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                Sign In
+              </Button>
+            </Stack>
+          </form>
+
+          <Text c="dimmed" size="sm" ta="center" mt="xl">
+            Don't have an account?{' '}
+            <Anchor size="sm" href="/register" className="hover:underline">
+              Create account
+            </Anchor>
+          </Text>
+        </Paper>
+
+        <Text c="dimmed" size="xs" ta="center" mt="xl">
+          <Anchor size="xs" href="/" className="hover:underline">
+            ← Back to Home
           </Anchor>
         </Text>
-      </Paper>
-    </Container>
+      </Container>
+    </div>
   );
 }
 
-// ✅ Suspense wrapper component
+// Main export with Suspense wrapper
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div>Loading login page...</div>}>
+    <Suspense fallback={<LoadingFallback />}>
       <LoginContent />
     </Suspense>
   );

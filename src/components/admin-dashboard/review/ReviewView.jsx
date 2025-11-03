@@ -3,7 +3,7 @@
 
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Avatar, Text, Group, Badge, Rating, Stack } from '@mantine/core';
+import { Avatar, Text, Group, Badge, Rating, Stack, Box } from '@mantine/core';
 import { 
   IconMessage, 
   IconUser, 
@@ -123,7 +123,7 @@ export default function ReviewsPage() {
       accessor: 'reviewTitle',
       sortField: 'reviewTitle',
       render: (item) => (
-        <Group gap="sm" align="flex-start">
+        <Group gap="sm" align="flex-start" style={{ maxWidth: '350px' }}>
           <Avatar 
             radius="xl" 
             size="md"
@@ -131,11 +131,34 @@ export default function ReviewsPage() {
           >
             {item.reviewType === 'Product' ? 'P' : 'B'}
           </Avatar>
-          <div style={{ flex: 1 }}>
-            <Text fw={500} size="sm" lineClamp={1}>
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <Text 
+              fw={500} 
+              size="sm" 
+              style={{ 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '280px'
+              }}
+              title={item.reviewTitle || 'No Title'}
+            >
               {item.reviewTitle || 'No Title'}
             </Text>
-            <Text size="xs" c="dimmed" lineClamp={2}>
+            <Text 
+              size="xs" 
+              c="dimmed" 
+              style={{ 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                maxWidth: '280px',
+                wordBreak: 'break-word'
+              }}
+              title={item.reviewBody || 'No review content'}
+            >
               {item.reviewBody || 'No review content'}
             </Text>
             <Group gap="xs" mt={4}>
@@ -157,7 +180,7 @@ export default function ReviewsPage() {
                 </Badge>
               )}
             </Group>
-          </div>
+          </Box>
         </Group>
       )
     },
@@ -167,14 +190,38 @@ export default function ReviewsPage() {
       accessor: 'name',
       sortField: 'name',
       render: (item) => (
-        <Stack gap={2}>
+        <Stack gap={2} style={{ minWidth: '180px' }}>
           <Group gap={6}>
             <IconUser size={14} opacity={0.6} />
-            <Text size="sm" fw={500}>{item.name}</Text>
+            <Text 
+              size="sm" 
+              fw={500}
+              style={{ 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '150px'
+              }}
+              title={item.name}
+            >
+              {item.name}
+            </Text>
           </Group>
           <Group gap={6}>
             <IconMail size={12} opacity={0.6} />
-            <Text size="xs" c="dimmed">{item.email}</Text>
+            <Text 
+              size="xs" 
+              c="dimmed"
+              style={{ 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '150px'
+              }}
+              title={item.email}
+            >
+              {item.email}
+            </Text>
           </Group>
           {item.phoneNumber && (
             <Group gap={6}>
@@ -191,28 +238,32 @@ export default function ReviewsPage() {
       accessor: 'product_store_rating',
       sortField: 'product_store_rating',
       render: (item) => (
-        <Stack gap={4}>
-          <Group gap={4}>
-            <Text size="xs" c="dimmed">Overall:</Text>
+        <Stack gap={4} style={{ minWidth: '180px' }}>
+          <Group gap={4} wrap="nowrap">
+            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Overall:</Text>
             <Rating value={item.product_store_rating} readOnly size="xs" />
             <Text size="xs" fw={500}>({item.product_store_rating})</Text>
           </Group>
-          <Group gap={4}>
-            <Text size="xs" c="dimmed">Seller:</Text>
+          <Group gap={4} wrap="nowrap">
+            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Seller:</Text>
             <Rating value={item.seller_rating} readOnly size="xs" />
+            <Text size="xs" c="dimmed">({item.seller_rating})</Text>
           </Group>
-          <Group gap={4}>
-            <Text size="xs" c="dimmed">Quality:</Text>
+          <Group gap={4} wrap="nowrap">
+            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Quality:</Text>
             <Rating value={item.product_quality_rating} readOnly size="xs" />
+            <Text size="xs" c="dimmed">({item.product_quality_rating})</Text>
           </Group>
-          <Group gap={4}>
-            <Text size="xs" c="dimmed">Price:</Text>
+          <Group gap={4} wrap="nowrap">
+            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Price:</Text>
             <Rating value={item.product_price_rating} readOnly size="xs" />
+            <Text size="xs" c="dimmed">({item.product_price_rating})</Text>
           </Group>
           {item.issue_handling_rating && (
-            <Group gap={4}>
-              <Text size="xs" c="dimmed">Issue Handling:</Text>
+            <Group gap={4} wrap="nowrap">
+              <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Issue:</Text>
               <Rating value={item.issue_handling_rating} readOnly size="xs" />
+              <Text size="xs" c="dimmed">({item.issue_handling_rating})</Text>
             </Group>
           )}
         </Stack>
@@ -223,7 +274,7 @@ export default function ReviewsPage() {
       header: 'Target',
       accessor: 'reviewType',
       render: (item) => (
-        <Stack gap={4}>
+        <Stack gap={4} style={{ minWidth: '120px' }}>
           {item.reviewType === 'Product' && item.productId ? (
             <Group gap={6}>
               <IconPackage size={14} opacity={0.6} />
@@ -240,7 +291,19 @@ export default function ReviewsPage() {
           {item.orderId && (
             <Group gap={6}>
               <IconShoppingCart size={12} opacity={0.6} />
-              <Text size="xs" c="dimmed">Order: {item.orderId}</Text>
+              <Text 
+                size="xs" 
+                c="dimmed"
+                style={{ 
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '100px'
+                }}
+                title={item.orderId}
+              >
+                {item.orderId}
+              </Text>
             </Group>
           )}
         </Stack>
@@ -270,12 +333,15 @@ export default function ReviewsPage() {
       accessor: 'createdAt',
       sortField: 'createdAt',
       render: (item) => (
-        <Stack gap={2}>
+        <Stack gap={2} style={{ minWidth: '100px' }}>
           <Text size="sm" fw={500}>
             {new Date(item.createdAt).toLocaleDateString()}
           </Text>
           <Text size="xs" c="dimmed">
-            {new Date(item.createdAt).toLocaleTimeString()}
+            {new Date(item.createdAt).toLocaleTimeString([], { 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
           </Text>
         </Stack>
       )
@@ -349,14 +415,14 @@ export default function ReviewsPage() {
         color: 'green',
         icon: <IconStarFilled size={16} />,
         onClick: (review) => handleStatusChange(review, 'ACTIVE'),
-        showCondition: (review) => review.status === 'INACTIVE' // Only show when INACTIVE
+        showCondition: (review) => review.status === 'INACTIVE'
       },
       {
         tooltip: 'Deactivate Review',
         color: 'orange',
         icon: <IconX size={16} />,
         onClick: (review) => handleStatusChange(review, 'INACTIVE'),
-        showCondition: (review) => review.status === 'ACTIVE' // Only show when ACTIVE
+        showCondition: (review) => review.status === 'ACTIVE'
       }
     ]
   };
@@ -426,7 +492,7 @@ export default function ReviewsPage() {
       onDelete={handleDelete}
       onExport={customExport}
       defaultLimit={25}
-      addEnabled={false} // Since reviews are typically submitted by users, not admins
+      addEnabled={false}
     />
   );
 }
