@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   TextInput,
@@ -22,7 +22,8 @@ import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
 import { API_URL } from '../../../utils/apiUrl';
 
-export default function LoginPage() {
+// ✅ Extracted content that uses useSearchParams
+function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const setAuth = useAuthStore((state) => state.setAuth);
@@ -43,54 +44,46 @@ export default function LoginPage() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    
-    // Validation
+
     if (!email || !password) {
-      notifications.show({ 
-        title: 'Validation Error', 
-        message: 'Please enter both email and password', 
-        color: 'red' 
+      notifications.show({
+        title: 'Validation Error',
+        message: 'Please enter both email and password',
+        color: 'red',
       });
       return;
     }
 
     setLoading(true);
-    
-    try {
-      const res = await axiosWrapper('post', API_URL.LOGIN_USER, { 
-        email, 
-        password 
-      });
 
-      // Check if user has admin role
+    try {
+      const res = await axiosWrapper('post', API_URL.LOGIN_USER, { email, password });
+
       if (res.data.user.role !== 'ADMIN' && res.data.user.role !== 'SUPER_ADMIN') {
-        notifications.show({ 
-          title: 'Access Denied', 
-          message: 'You do not have permission to access the admin panel', 
-          color: 'red' 
+        notifications.show({
+          title: 'Access Denied',
+          message: 'You do not have permission to access the admin panel',
+          color: 'red',
         });
         return;
       }
 
-      // Set expiry time based on remember me
       const expiry = remember ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
       setAuth(res.data.user, res.data.token, expiry);
 
-      notifications.show({ 
-        title: 'Success', 
-        message: `Welcome back, ${res.data.user.name}!`, 
-        color: 'green' 
+      notifications.show({
+        title: 'Success',
+        message: `Welcome back, ${res.data.user.name}!`,
+        color: 'green',
       });
 
-      // Redirect to original destination or dashboard
       const redirect = searchParams.get('redirect') || '/admin/dashboard';
       router.push(redirect);
-      
     } catch (err) {
-      notifications.show({ 
-        title: 'Login Failed', 
-        message: err?.message || 'Invalid credentials. Please try again.', 
-        color: 'red' 
+      notifications.show({
+        title: 'Login Failed',
+        message: err?.message || 'Invalid credentials. Please try again.',
+        color: 'red',
       });
     } finally {
       setLoading(false);
@@ -100,7 +93,9 @@ export default function LoginPage() {
   return (
     <Container size={460} my={80}>
       <Box mb="xl">
-        <Title ta="center" order={1}>Welcome Back</Title>
+        <Title ta="center" order={1}>
+          Welcome Back
+        </Title>
         <Text c="dimmed" size="sm" ta="center" mt={5}>
           Sign in to access your admin dashboard
         </Text>
@@ -143,9 +138,9 @@ export default function LoginPage() {
               </Anchor>
             </Group>
 
-            <Button 
+            <Button
               type="submit"
-              fullWidth 
+              fullWidth
               size="md"
               loading={loading}
               loaderProps={{ type: 'dots' }}
@@ -163,5 +158,14 @@ export default function LoginPage() {
         </Text>
       </Paper>
     </Container>
+  );
+}
+
+// ✅ Suspense wrapper component
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading login page...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
