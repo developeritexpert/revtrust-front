@@ -11,9 +11,14 @@ import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
 import { PRODUCT_API, BRAND_API } from '../../../utils/apiUrl';
 import { useRouter } from 'next/navigation';
+import { useRef } from 'react';
+
 
 export default function ProductsPage() {
   const router = useRouter();
+
+  const tableRef = useRef();
+
 
   const fetchProducts = useCallback(async (params) => {
     const token = useAuthStore.getState().token;
@@ -65,40 +70,54 @@ export default function ProductsPage() {
     }
   }, []);
 
-  const handleDelete = async (product) => {
-    modals.openConfirmModal({
-      title: 'Delete Product',
-      children: (
-        <Text size="sm">
-          Are you sure you want to delete <strong>{product.name}</strong>? This action cannot be undone.
-        </Text>
-      ),
-      labels: { confirm: 'Delete', cancel: 'Cancel' },
-      confirmProps: { color: 'red' },
-      onConfirm: async () => {
-        try {
-          const token = useAuthStore.getState().token;
-          await axiosWrapper(
-            'delete',
-            `${PRODUCT_API.GET_ALL_PRODUCTS}/${product._id}`,
-            {},
-            token
-          );
-          notifications.show({
-            title: 'Success',
-            message: 'Product deleted successfully',
-            color: 'green',
-          });
-        } catch (err) {
-          notifications.show({
-            title: 'Error',
-            message: err.response?.data?.message || 'Failed to delete product',
-            color: 'red',
-          });
-        }
-      },
-    });
-  };
+const handleDelete = async (brand) => {
+  console.log('🟡 Delete request triggered for brand:', brand);
+
+  modals.openConfirmModal({
+    title: 'Delete Brand',
+    children: (
+      <Text size="sm">
+        Are you sure you want to delete <strong>{brand.name}</strong>? This action cannot be undone.
+      </Text>
+    ),
+    labels: { confirm: 'Delete', cancel: 'Cancel' },
+    confirmProps: { color: 'red' },
+    onConfirm: async () => {
+      try {
+        const token = useAuthStore.getState().token;
+        const URL = BRAND_API.DELETE_BRAND.replace(':id', brand._id);
+        console.log('🟢 DELETE URL:', URL);
+        console.log('🔐 Token:', token ? 'Token present ✅' : '❌ Token missing');
+
+        // Start loader
+        tableRef.current?.setLoading?.(true);
+
+        const response = await axiosWrapper('delete', URL, {}, token);
+        console.log('✅ Delete response:', response);
+
+        notifications.show({
+          title: 'Success',
+          message: 'Brand deleted successfully',
+          color: 'green',
+        });
+
+        await tableRef.current?.refresh?.();
+      } catch (err) {
+        console.error('❌ Delete brand error:', err);
+        notifications.show({
+          title: 'Error',
+          message: err.response?.data?.message || 'Failed to delete brand',
+          color: 'red',
+        });
+      } finally {
+        tableRef.current?.setLoading?.(false);
+      }
+    },
+  });
+};
+
+  
+
 
   const handleAddProduct = () => {
     router.push('/admin/products/add');
@@ -295,6 +314,7 @@ export default function ProductsPage() {
 
   return (
     <DataTable
+      ref={tableRef}
       title="Products Management"
       fetchFunction={fetchProducts}
       columns={columns}
