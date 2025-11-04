@@ -11,10 +11,13 @@ import DataTable from '../../../components/DataTable/DataTable';
 import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
 import { BRAND_API } from '../../../utils/apiUrl';
+import { useRef } from 'react';
 
 export default function BrandsPage() {
   const router = useRouter();
   
+  const tableRef = useRef();
+
   const fetchBrands = useCallback(async (params) => {
     const token = useAuthStore.getState().token;
     const queryString = new URLSearchParams(params).toString();
@@ -41,29 +44,34 @@ export default function BrandsPage() {
         try {
           const token = useAuthStore.getState().token;
           const URL = BRAND_API.DELETE_BRAND.replace(':id', brand._id);
-          
-          await axiosWrapper(
-            'delete',
-            URL,
-            {},
-            token
-          );
+  
+          // ✅ Start loader on table
+          tableRef.current?.setLoading?.(true);
+  
+          await axiosWrapper('delete', URL, {}, token);
+  
           notifications.show({
             title: 'Success',
             message: 'Brand deleted successfully',
             color: 'green',
           });
-       
+  
+          // ✅ Refresh table after delete
+          await tableRef.current?.refresh?.();
         } catch (err) {
           notifications.show({
             title: 'Error',
             message: err.response?.data?.message || 'Failed to delete brand',
             color: 'red',
           });
+        } finally {
+          // ✅ Stop loader
+          tableRef.current?.setLoading?.(false);
         }
       },
     });
   };
+  
 
   const handleAdd = () => {
     router.push('/admin/brands/add');
@@ -230,6 +238,7 @@ export default function BrandsPage() {
 
   return (
     <DataTable
+      ref={tableRef}
       title="Brands Management"
       fetchFunction={fetchBrands}
       columns={columns}

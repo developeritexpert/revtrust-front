@@ -1,8 +1,8 @@
 // components/admin-dashboard/review/ReviewsPage.jsx
 'use client';
 
-import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { useCallback,useRef } from 'react';
+import { useRouter,usePathname } from 'next/navigation';
 import { Avatar, Text, Group, Badge, Rating, Stack, Box } from '@mantine/core';
 import { 
   IconMessage, 
@@ -25,10 +25,27 @@ import { REVIEW_API, PRODUCT_API, BRAND_API } from '../../../utils/apiUrl';
 
 export default function ReviewsPage() {
   const router = useRouter();
-  
+
+  const pathname = usePathname();
+  const tableRef = useRef();
+
+
+  // determine which type of review to show based on route
+  const isPendingPage = pathname.includes('/pending');
+  const isApprovedPage = pathname.includes('/approved');
+
   const fetchReviews = useCallback(async (params) => {
     const token = useAuthStore.getState().token;
-    const queryString = new URLSearchParams(params).toString();
+    let queryString = new URLSearchParams(params).toString();
+
+      // dynamically filter by status depending on route
+      if (isPendingPage) {
+        queryString += `&status=INACTIVE`;
+      } else if (isApprovedPage) {
+        queryString += `&status=ACTIVE`;
+      }
+        
+
     const response = await axiosWrapper(
       'get',
       `${REVIEW_API.GET_ALL_REVIEWS}?${queryString}`,
@@ -36,7 +53,7 @@ export default function ReviewsPage() {
       token,
     );
     return response.data;
-  }, []);
+  }, [isPendingPage, isApprovedPage]);
 
   const handleDelete = async (review) => {
     modals.openConfirmModal({
@@ -52,29 +69,38 @@ export default function ReviewsPage() {
         try {
           const token = useAuthStore.getState().token;
           const URL = REVIEW_API.DELETE_REVIEW.replace(':id', review._id);
-          
-          await axiosWrapper(
-            'delete',
-            URL,
-            {},
-            token
-          );
+  
+          // Show loader
+          tableRef.current?.setLoading?.(true);
+  
+          await axiosWrapper('delete', URL, {}, token);
+  
           notifications.show({
             title: 'Success',
             message: 'Review deleted successfully',
             color: 'green',
           });
-       
+  
+          // ✅ Refresh table data after deletion
+          await tableRef.current?.refresh?.();
         } catch (err) {
           notifications.show({
             title: 'Error',
             message: err.response?.data?.message || 'Failed to delete review',
             color: 'red',
           });
+        } finally {
+          tableRef.current?.setLoading?.(false);
         }
       },
     });
   };
+  
+
+  const handleAddReview = () => {
+    router.push('/admin/reviews/add');
+  };
+
 
   const handleEdit = (review) => {
     router.push(`/admin/reviews/edit/${review._id}`);
@@ -240,7 +266,7 @@ export default function ReviewsPage() {
       render: (item) => (
         <Stack gap={4} style={{ minWidth: '180px' }}>
           <Group gap={4} wrap="nowrap">
-            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Overall:</Text>
+            <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Store:</Text>
             <Rating value={item.product_store_rating} readOnly size="xs" />
             <Text size="xs" fw={500}>({item.product_store_rating})</Text>
           </Group>
@@ -380,51 +406,128 @@ export default function ReviewsPage() {
         { value: 'Brand', label: 'Brand Review' },
       ]
     },
-    {
-      key: 'status',
-      label: 'Status',
-      type: 'select',
-      options: [
-        { value: '', label: 'All Statuses' },
-        { value: 'ACTIVE', label: 'Active' },
-        { value: 'INACTIVE', label: 'Inactive' },
+  // ✅ hide Status filter on pending or approved pages
+  ...(!isPendingPage && !isApprovedPage
+    ? [
+        {
+          key: 'status',
+          label: 'Status',
+          type: 'select',
+          options: [
+            { value: '', label: 'All Statuses' },
+            { value: 'ACTIVE', label: 'Active' },
+            { value: 'INACTIVE', label: 'Inactive' },
+          ]
+        },
       ]
-    },
-    {
-      key: 'minRating',
-      label: 'Min Rating',
-      type: 'select',
-      options: [
-        { value: '', label: 'Any Rating' },
-        { value: '1', label: '1+ Stars' },
-        { value: '2', label: '2+ Stars' },
-        { value: '3', label: '3+ Stars' },
-        { value: '4', label: '4+ Stars' },
-        { value: '5', label: '5 Stars' },
-      ]
-    },
+    : []),
+  // ✅ Ratings Section
+  {
+    key: 'minRating',
+    label: 'Store Rating',
+    type: 'select',
+    options: [
+      { value: '', label: 'Any Rating' },
+      { value: '1', label: '1+ Stars' },
+      { value: '2', label: '2+ Stars' },
+      { value: '3', label: '3+ Stars' },
+      { value: '4', label: '4+ Stars' },
+      { value: '5', label: '5 Stars' },
+    ]
+  },
+  {
+    key: 'sellerRating',
+    label: 'Seller Rating',
+    type: 'select',
+    options: [
+      { value: '', label: 'Any Rating' },
+      { value: '1', label: '1+ Stars' },
+      { value: '2', label: '2+ Stars' },
+      { value: '3', label: '3+ Stars' },
+      { value: '4', label: '4+ Stars' },
+      { value: '5', label: '5 Stars' },
+    ]
+  },
+  {
+    key: 'qualityRating',
+    label: 'Quality Rating',
+    type: 'select',
+    options: [
+      { value: '', label: 'Any Rating' },
+      { value: '1', label: '1+ Stars' },
+      { value: '2', label: '2+ Stars' },
+      { value: '3', label: '3+ Stars' },
+      { value: '4', label: '4+ Stars' },
+      { value: '5', label: '5 Stars' },
+    ]
+  },
+  {
+    key: 'priceRating',
+    label: 'Price Rating',
+    type: 'select',
+    options: [
+      { value: '', label: 'Any Rating' },
+      { value: '1', label: '1+ Stars' },
+      { value: '2', label: '2+ Stars' },
+      { value: '3', label: '3+ Stars' },
+      { value: '4', label: '4+ Stars' },
+      { value: '5', label: '5 Stars' },
+    ]
+  },
+  {
+    key: 'issueRating',
+    label: 'Issue Rating',
+    type: 'select',
+    options: [
+      { value: '', label: 'Any Rating' },
+      { value: '1', label: '1+ Stars' },
+      { value: '2', label: '2+ Stars' },
+      { value: '3', label: '3+ Stars' },
+      { value: '4', label: '4+ Stars' },
+      { value: '5', label: '5 Stars' },
+    ]
+  },
   ];
 
   const actions = {
     view: true,
     edit: true,
     delete: true,
-    custom: [
-      {
-        tooltip: 'Activate Review',
-        color: 'green',
-        icon: <IconStarFilled size={16} />,
-        onClick: (review) => handleStatusChange(review, 'ACTIVE'),
-        showCondition: (review) => review.status === 'INACTIVE'
-      },
-      {
-        tooltip: 'Deactivate Review',
-        color: 'orange',
-        icon: <IconX size={16} />,
-        onClick: (review) => handleStatusChange(review, 'INACTIVE'),
-        showCondition: (review) => review.status === 'ACTIVE'
-      }
-    ]
+    custom: isPendingPage
+    ? [
+        {
+          tooltip: 'Activate Review',
+          color: 'green',
+          icon: <IconStarFilled size={16} />,
+          onClick: (review) => handleStatusChange(review, 'ACTIVE'),
+        },
+      ]
+    : isApprovedPage
+    ? [
+        {
+          tooltip: 'Deactivate Review',
+          color: 'orange',
+          icon: <IconX size={16} />,
+          onClick: (review) => handleStatusChange(review, 'INACTIVE'),
+        },
+      ]
+    : [
+        {
+          tooltip: 'Activate Review',
+          color: 'green',
+          icon: <IconStarFilled size={16} />,
+          onClick: (review) => handleStatusChange(review, 'ACTIVE'),
+          showCondition: (r) => r.status === 'INACTIVE',
+        },
+        {
+          tooltip: 'Deactivate Review',
+          color: 'orange',
+          icon: <IconX size={16} />,
+          onClick: (review) => handleStatusChange(review, 'INACTIVE'),
+          showCondition: (r) => r.status === 'ACTIVE',
+        },
+      ],
+
   };
 
   const customExport = (data) => {
@@ -435,7 +538,7 @@ export default function ReviewsPage() {
       'Email', 
       'Review Type', 
       'Status',
-      'Overall Rating',
+      'Store Rating',
       'Seller Rating',
       'Quality Rating',
       'Price Rating',
@@ -482,17 +585,19 @@ export default function ReviewsPage() {
 
   return (
     <DataTable
-      title="Reviews Management"
+      ref={tableRef} 
+      title={isPendingPage ? 'Pending Reviews' : isApprovedPage ? 'Approved Reviews' : 'All Reviews'}
       fetchFunction={fetchReviews}
       columns={columns}
       filters={filters}
       actions={actions}
+      onAdd={handleAddReview}
       onEdit={handleEdit}
       onView={handleView}
       onDelete={handleDelete}
       onExport={customExport}
       defaultLimit={25}
-      addEnabled={false}
+
     />
   );
 }

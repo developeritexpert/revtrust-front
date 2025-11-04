@@ -39,30 +39,26 @@ import {
   IconX,
 } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback,useRef } from 'react';
+import React, {forwardRef, useImperativeHandle } from 'react';
 
-export default function DataTable({
-  // Required props
+const DataTable = forwardRef(({ 
   title,
   apiEndpoint,
   fetchFunction,
   columns,
   actions,
-  
-  // Optional props with defaults
   exportEnabled = true,
   addEnabled = true,
   filters = [],
   defaultSort = { field: 'createdAt', order: 'desc' },
   defaultLimit = 50,
-  
-  // Callbacks
   onAdd,
   onEdit,
   onView,
   onDelete,
   onExport,
-}) {
+}, ref)=> {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -203,6 +199,11 @@ export default function DataTable({
       setLoading(false);
     }
   }, [page, limit, sortBy, sortOrder, filterValues, fetchFunction]);
+
+  useImperativeHandle(ref, () => ({
+    refresh: fetchData,
+  }));
+  
 
   // Fetch data when dependencies change
   useEffect(() => {
@@ -626,4 +627,6 @@ export default function DataTable({
       </Card>
     </Box>
   );
-}
+});
+
+export default DataTable;
