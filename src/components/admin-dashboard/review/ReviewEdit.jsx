@@ -328,11 +328,10 @@ export default function EditReview() {
 
   const handleSubmit = async (values) => {
     setLoading(true);
-
+  
     try {
-      // Create a clean copy of values
       const submitData = { ...values };
-
+  
       // Validation: Ensure either productId or brandId is provided based on reviewType
       if (submitData.reviewType === 'Product') {
         if (!submitData.productId && !submitData.shopifyProductId) {
@@ -351,7 +350,6 @@ export default function EditReview() {
           });
           return;
         }
-     
         delete submitData.brandId;
       } else if (submitData.reviewType === 'Brand') {
         if (!submitData.brandId) {
@@ -364,7 +362,7 @@ export default function EditReview() {
         }
         delete submitData.productId;
       }
-
+  
       // Convert string values to proper types if needed
       const numericFields = [
         'product_store_rating',
@@ -373,34 +371,39 @@ export default function EditReview() {
         'product_price_rating',
         'issue_handling_rating'
       ];
-
+  
       numericFields.forEach(field => {
         const value = submitData[field];
         if (value === '' || value === null || value === undefined) {
-          // remove empty optional fields completely (let backend default handle it)
           delete submitData[field];
         } else {
           submitData[field] = parseFloat(value);
         }
       });
-      
-
+  
       // Convert checkboxes to boolean
       submitData.privacy_policy = Boolean(submitData.privacy_policy);
       submitData.term_and_condition = Boolean(submitData.term_and_condition);
-
+  
+      // 🧹 ADD THIS CLEANUP BLOCK HERE
+      ['productId', 'brandId'].forEach(field => {
+        if (submitData[field] === '' || submitData[field] === null) {
+          delete submitData[field];
+        }
+      });
+  
       console.log('Updating review data:', submitData);
-
+  
       const url = REVIEW_API.UPDATE_REVIEW.replace(':id', reviewId);
       await axiosWrapper('put', url, submitData, token);
-
+  
       notifications.show({
         title: 'Success',
         message: 'Review updated successfully',
         color: 'green',
         icon: <IconStar size={18} />,
       });
-
+  
       router.push('/admin/reviews');
     } catch (error) {
       console.error('Error updating review:', error);
@@ -409,6 +412,7 @@ export default function EditReview() {
       setLoading(false);
     }
   };
+  
 
   const handleCancel = () => {
     router.push('/admin/reviews');
