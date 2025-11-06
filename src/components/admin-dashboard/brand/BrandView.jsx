@@ -101,7 +101,7 @@ export default function BrandsPage() {
   };
 
   const generateEmbedCode = (brandId) => {
-    return `<div class="review-widget-container" 
+    return `<div class="revs-review-widget-container" 
     data-brandid="${brandId}" 
     data-brand="{{ shop.name }}" 
     data-product-id="{{ product.id }}" 

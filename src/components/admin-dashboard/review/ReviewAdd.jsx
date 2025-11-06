@@ -67,6 +67,7 @@ export default function AddReview() {
         {},
         token
       );
+     
 
       if (response?.data?.data) {
         return response.data.data.map((product) => ({
@@ -143,7 +144,8 @@ export default function AddReview() {
       span: 12,
       dependsOn: 'reviewType',
       showWhen: (values) => values.reviewType === 'Product',
-    },  
+    },
+     
     {
       name: 'brandId',
       label: 'Brand',
@@ -292,17 +294,24 @@ export default function AddReview() {
    * --------------------------- */
   const handleSubmit = async (values) => {
     setLoading(true);
-    
+  
     try {
-      // Create a clean copy of values
       const submitData = { ...values };
-
+  
       // Validation: Ensure either productId or brandId is provided based on reviewType
       if (submitData.reviewType === 'Product') {
-        if (!submitData.productId) {
+        if (!submitData.productId && !submitData.shopifyProductId) {
           notifications.show({
             title: 'Validation Error',
-            message: 'Please select a product for product review',
+            message: 'Please select a product or enter a Shopify Product ID',
+            color: 'red',
+          });
+          return;
+        }
+        if (submitData.productId && submitData.shopifyProductId) {
+          notifications.show({
+            title: 'Validation Error',
+            message: 'Please provide only one: either product or Shopify Product ID',
             color: 'red',
           });
           return;
@@ -319,8 +328,8 @@ export default function AddReview() {
         }
         delete submitData.productId;
       }
-
-      // Convert string values to proper types if needed
+  
+      // Convert string values to numbers if needed
       const numericFields = [
         'product_store_rating',
         'seller_rating',
@@ -328,30 +337,38 @@ export default function AddReview() {
         'product_price_rating',
         'issue_handling_rating'
       ];
-
+  
       numericFields.forEach(field => {
-        if (submitData[field] !== undefined && submitData[field] !== null && submitData[field] !== '') {
-          submitData[field] = parseFloat(submitData[field]);
+        const value = submitData[field];
+        if (value === '' || value === null || value === undefined) {
+          delete submitData[field];
+        } else {
+          submitData[field] = parseFloat(value);
         }
       });
-
+  
       // Convert checkboxes to boolean
       submitData.privacy_policy = Boolean(submitData.privacy_policy);
       submitData.term_and_condition = Boolean(submitData.term_and_condition);
-
+  
+      // ✅ Add this cleanup step
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === '' || submitData[key] === null) {
+          delete submitData[key];
+        }
+      });
+  
       console.log('Submitting review data:', submitData);
-
+  
       const response = await axiosWrapper('post', REVIEW_API.ADD_REVIEW, submitData, token);
-      
-      console.log('Review created:', response);
-
+  
       notifications.show({
         title: 'Success',
         message: 'Review added successfully',
         color: 'green',
         icon: <IconStar size={18} />,
       });
-
+  
       router.push('/admin/reviews');
     } catch (error) {
       console.error('Error creating review:', error);
@@ -360,6 +377,7 @@ export default function AddReview() {
       setLoading(false);
     }
   };
+  
 
   const handleCancel = () => {
     router.push('/admin/reviews');

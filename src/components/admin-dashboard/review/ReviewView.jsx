@@ -285,13 +285,14 @@ export default function ReviewsPage() {
             <Rating value={item.product_price_rating} readOnly size="xs" />
             <Text size="xs" c="dimmed">({item.product_price_rating})</Text>
           </Group>
-          {item.issue_handling_rating && (
+          {item.issue_handling_rating !== null && item.issue_handling_rating !== undefined && item.issue_handling_rating !== 0 && (
             <Group gap={4} wrap="nowrap">
               <Text size="xs" c="dimmed" style={{ minWidth: '65px' }}>Issue:</Text>
               <Rating value={item.issue_handling_rating} readOnly size="xs" />
               <Text size="xs" c="dimmed">({item.issue_handling_rating})</Text>
             </Group>
           )}
+
         </Stack>
       )
     },
@@ -299,42 +300,59 @@ export default function ReviewsPage() {
       key: 'target',
       header: 'Target',
       accessor: 'reviewType',
-      render: (item) => (
-        <Stack gap={4} style={{ minWidth: '120px' }}>
-          {item.reviewType === 'Product' && item.productId ? (
-            <Group gap={6}>
-              <IconPackage size={14} opacity={0.6} />
-              <Text size="sm">Product</Text>
-            </Group>
-          ) : item.reviewType === 'Brand' && item.brandId ? (
-            <Group gap={6}>
-              <IconBuildingStore size={14} opacity={0.6} />
-              <Text size="sm">Brand</Text>
-            </Group>
-          ) : (
-            <Text size="sm" c="dimmed">Unknown</Text>
-          )}
-          {item.orderId && (
-            <Group gap={6}>
-              <IconShoppingCart size={12} opacity={0.6} />
-              <Text 
-                size="xs" 
-                c="dimmed"
-                style={{ 
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  maxWidth: '100px'
-                }}
-                title={item.orderId}
-              >
-                {item.orderId}
-              </Text>
-            </Group>
-          )}
-        </Stack>
-      )
+      render: (item) => {
+        const isProduct = item.reviewType === 'Product';
+        const isBrand = item.reviewType === 'Brand';
+        const hasTarget =
+          (isProduct && item.productId) ||
+          (isBrand && item.brandId) ||
+          (isProduct && item.shopifyProductId);
+    
+        return (
+          <Stack gap={4} style={{ minWidth: '120px' }}>
+            {hasTarget ? (
+              <Group gap={6}>
+                {isProduct ? (
+                  <>
+                    <IconPackage size={14} opacity={0.6} />
+                    <Text size="sm">Product</Text>
+                  </>
+                ) : (
+                  <>
+                    <IconBuildingStore size={14} opacity={0.6} />
+                    <Text size="sm">Brand</Text>
+                  </>
+                )}
+              </Group>
+            ) : (
+              <Group gap={6}>
+                <IconX size={14} color="gray" />
+                <Text size="sm" c="dimmed">Not Found</Text>
+              </Group>
+            )}
+            {item.orderId && (
+              <Group gap={6}>
+                <IconShoppingCart size={12} opacity={0.6} />
+                <Text
+                  size="xs"
+                  c="dimmed"
+                  style={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '100px'
+                  }}
+                  title={item.orderId}
+                >
+                  {item.orderId}
+                </Text>
+              </Group>
+            )}
+          </Stack>
+        );
+      },
     },
+    
     {
       key: 'status',
       header: 'Status',

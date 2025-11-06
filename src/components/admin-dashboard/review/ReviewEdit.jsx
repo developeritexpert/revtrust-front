@@ -335,14 +335,23 @@ export default function EditReview() {
 
       // Validation: Ensure either productId or brandId is provided based on reviewType
       if (submitData.reviewType === 'Product') {
-        if (!submitData.productId) {
+        if (!submitData.productId && !submitData.shopifyProductId) {
           notifications.show({
             title: 'Validation Error',
-            message: 'Please select a product for product review',
+            message: 'Please select a product or enter a Shopify Product ID',
             color: 'red',
           });
           return;
         }
+        if (submitData.productId && submitData.shopifyProductId) {
+          notifications.show({
+            title: 'Validation Error',
+            message: 'Please provide only one: either product or Shopify Product ID',
+            color: 'red',
+          });
+          return;
+        }
+     
         delete submitData.brandId;
       } else if (submitData.reviewType === 'Brand') {
         if (!submitData.brandId) {
@@ -366,10 +375,15 @@ export default function EditReview() {
       ];
 
       numericFields.forEach(field => {
-        if (submitData[field] !== undefined && submitData[field] !== null && submitData[field] !== '') {
-          submitData[field] = parseFloat(submitData[field]);
+        const value = submitData[field];
+        if (value === '' || value === null || value === undefined) {
+          // remove empty optional fields completely (let backend default handle it)
+          delete submitData[field];
+        } else {
+          submitData[field] = parseFloat(value);
         }
       });
+      
 
       // Convert checkboxes to boolean
       submitData.privacy_policy = Boolean(submitData.privacy_policy);
