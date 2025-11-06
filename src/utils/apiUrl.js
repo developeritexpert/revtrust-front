@@ -58,3 +58,10 @@ export const REVIEW_API = {
     STATUS_REVIEW : `${REVIEW_API_BASE}/:id/status`, 
 
 };
+
+export const PROFILE_API_BASE = `${API_BASE}/profile`;
+export const PROFILE_API={
+    GET_PROFILE: `${PROFILE_API_BASE}/`,
+    UPDATE_PROFILE: `${PROFILE_API_BASE}/update`,
+    CHANGE_PASSWORD: `${PROFILE_API_BASE}/change-password`,
+}

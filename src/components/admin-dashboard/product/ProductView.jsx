@@ -70,51 +70,51 @@ export default function ProductsPage() {
     }
   }, []);
 
-const handleDelete = async (brand) => {
-  console.log('🟡 Delete request triggered for brand:', brand);
+  const handleDelete = async (product) => {
+    console.log('🟡 Delete request triggered for product:', product);
 
-  modals.openConfirmModal({
-    title: 'Delete Brand',
-    children: (
-      <Text size="sm">
-        Are you sure you want to delete <strong>{brand.name}</strong>? This action cannot be undone.
-      </Text>
-    ),
-    labels: { confirm: 'Delete', cancel: 'Cancel' },
-    confirmProps: { color: 'red' },
-    onConfirm: async () => {
-      try {
-        const token = useAuthStore.getState().token;
-        const URL = BRAND_API.DELETE_BRAND.replace(':id', brand._id);
-        console.log('🟢 DELETE URL:', URL);
-        console.log('🔐 Token:', token ? 'Token present ✅' : '❌ Token missing');
+    modals.openConfirmModal({
+      title: 'Delete Product', // ✅ Changed title
+      children: (
+        <Text size="sm">
+          Are you sure you want to delete <strong>{product.name}</strong>? This action cannot be undone.
+        </Text>
+      ),
+      labels: { confirm: 'Delete', cancel: 'Cancel' },
+      confirmProps: { color: 'red' },
+      onConfirm: async () => {
+        try {
+          const token = useAuthStore.getState().token;
+          // ✅ Changed to PRODUCT_API
+          const URL = PRODUCT_API.DELETE_PRODUCT.replace(':id', product._id);
+          console.log('🟢 DELETE URL:', URL);
+          console.log('🔐 Token:', token ? 'Token present ✅' : '❌ Token missing');
 
-        // Start loader
-        tableRef.current?.setLoading?.(true);
+          tableRef.current?.setLoading?.(true);
 
-        const response = await axiosWrapper('delete', URL, {}, token);
-        console.log('✅ Delete response:', response);
+          const response = await axiosWrapper('delete', URL, {}, token);
+          console.log('✅ Delete response:', response);
 
-        notifications.show({
-          title: 'Success',
-          message: 'Brand deleted successfully',
-          color: 'green',
-        });
+          notifications.show({
+            title: 'Success',
+            message: 'Product deleted successfully', // ✅ Changed message
+            color: 'green',
+          });
 
-        await tableRef.current?.refresh?.();
-      } catch (err) {
-        console.error('❌ Delete brand error:', err);
-        notifications.show({
-          title: 'Error',
-          message: err.response?.data?.message || 'Failed to delete brand',
-          color: 'red',
-        });
-      } finally {
-        tableRef.current?.setLoading?.(false);
-      }
-    },
-  });
-};
+          await tableRef.current?.refresh?.();
+        } catch (err) {
+          console.error('❌ Delete product error:', err);
+          notifications.show({
+            title: 'Error',
+            message: err.response?.data?.message || 'Failed to delete product',
+            color: 'red',
+          });
+        } finally {
+          tableRef.current?.setLoading?.(false);
+        }
+      },
+    });
+  };
 
   
 
@@ -178,35 +178,48 @@ const handleDelete = async (brand) => {
         </Group>
       )
     },
-    {
-      key: 'stock',
-      header: 'Stock',
-      accessor: 'stock',
-      sortField: 'stock',
-      render: (item) => (
-        <Group gap={6}>
-          <IconPackage size={14} opacity={0.6} />
-          <Badge 
-            color={item.stockQuantity > 20 ? 'green' : item.stockQuantity > 5 ? 'yellow' : 'red'} 
-            variant="light"
-            size="sm"
-          >
-            {item.stockQuantity || 0} in stock
-          </Badge>
-        </Group>
-      )
-    },
+    // {
+    //   key: 'stock',
+    //   header: 'Stock',
+    //   accessor: 'stock',
+    //   sortField: 'stock',
+    //   render: (item) => (
+    //     <Group gap={6}>
+    //       <IconPackage size={14} opacity={0.6} />
+    //       <Badge 
+    //         color={item.stockQuantity > 20 ? 'green' : item.stockQuantity > 5 ? 'yellow' : 'red'} 
+    //         variant="light"
+    //         size="sm"
+    //       >
+    //         {item.stockQuantity || 0} in stock
+    //       </Badge>
+    //     </Group>
+    //   )
+    // },
     {
       key: 'rating',
       header: 'Rating',
       accessor: 'rating',
       sortField: 'rating',
-      render: (item) => (
-        <Group gap={6}>
-          <IconStar size={14} opacity={0.6} />
-          <Text size="sm">{item.averageRating ? `${item.averageRating}/5` : 'No ratings'}</Text>
-        </Group>
-      )
+      render: (item) => {
+        // ✅ USE averageRating (which is already rounded to 1 decimal)
+        const rating = item.averageRating || 0;
+        const reviewCount = item.totalReviews || 0;
+        
+        return (
+          <Group gap={6}>
+            <IconStar size={14} opacity={0.6} fill={rating > 0 ? '#ffc107' : 'none'} />
+            <Text size="sm" fw={500}>
+              {rating > 0 ? `${rating}/5` : 'No ratings'}
+            </Text>
+            {reviewCount > 0 && (
+              <Text size="xs" c="dimmed">
+                ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
+              </Text>
+            )}
+          </Group>
+        );
+      }
     },
     {
       key: 'status',

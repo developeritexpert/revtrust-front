@@ -69,20 +69,37 @@ export default function DynamicForm({
   // Load async options for select fields
   useEffect(() => {
     fields.forEach(async (field) => {
-      if (field.type === 'select' && field.filterFunction && field.loadOnMount) {
-        setLoadingOptions(prev => ({ ...prev, [field.name]: true }));
-        try {
-          const options = await field.filterFunction('');
-          setAsyncOptions(prev => ({ ...prev, [field.name]: options }));
-        } catch (error) {
-          console.error(`Failed to load options for ${field.name}:`, error);
-          setAsyncOptions(prev => ({ ...prev, [field.name]: [] }));
-        } finally {
-          setLoadingOptions(prev => ({ ...prev, [field.name]: false }));
+      if (field.type === 'select' && field.filterFunction) {
+        const initialValue = initialValues[field.name];
+  
+        // 🔹 Case 1: Load default options if loadOnMount is true
+        if (field.loadOnMount) {
+          setLoadingOptions(prev => ({ ...prev, [field.name]: true }));
+          try {
+            const options = await field.filterFunction('');
+            setAsyncOptions(prev => ({ ...prev, [field.name]: options }));
+          } finally {
+            setLoadingOptions(prev => ({ ...prev, [field.name]: false }));
+          }
+        }
+  
+        // 🔹 Case 2: Load option for initial value (important for edit mode)
+        else if (initialValue) {
+          try {
+            const options = await field.filterFunction('');
+            // Find and keep only the option matching the initial value
+            const selectedOption = options.find(opt => opt.value === initialValue);
+            if (selectedOption) {
+              setAsyncOptions(prev => ({ ...prev, [field.name]: [selectedOption] }));
+            }
+          } catch (err) {
+            console.error(`Failed to load initial option for ${field.name}:`, err);
+          }
         }
       }
     });
-  }, [fields]);
+  }, [fields, initialValues]);
+  
 
   const handleSubmit = async (values) => {
     try {
@@ -121,6 +138,11 @@ export default function DynamicForm({
   };
 
   const renderField = (field) => {
+
+    if (field.showWhen && !field.showWhen(form.values)) {
+      return null;
+    }
+    
     const commonProps = {
       label: field.label,
       placeholder: field.placeholder,

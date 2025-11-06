@@ -174,6 +174,14 @@ export default function ReviewDetail() {
             span: 6,
             icon: <IconPackage size={16} />,
           },
+          {
+            name: 'shopifyProductId',
+            label: 'Shopify Product ID',
+            type: 'text',
+            section: 'Related Entities',
+            span: 6,
+            icon: <IconPackage size={16} />,
+          },
         ]
       : reviewData?.reviewType === 'Brand'
       ? [
@@ -186,7 +194,7 @@ export default function ReviewDetail() {
             icon: <IconBuildingStore size={16} />,
           },
         ]
-      : []),
+      : []),    
     {
       name: 'product_store_rating',
       label: 'Store Rating',

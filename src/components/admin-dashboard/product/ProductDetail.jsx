@@ -127,14 +127,14 @@ export default function ProductDetail() {
       span: 6,
       icon: <IconCurrencyDollar size={16} />,
     },
-    {
-      name: 'stockQuantity',
-      label: 'Stock Quantity',
-      type: 'number',
-      section: 'Product Details',
-      span: 6,
-      icon: <IconStack size={16} />,
-    },
+    // {
+    //   name: 'stockQuantity',
+    //   label: 'Stock Quantity',
+    //   type: 'number',
+    //   section: 'Product Details',
+    //   span: 6,
+    //   icon: <IconStack size={16} />,
+    // },
     {
       name: 'averageRating',
       label: 'Average Rating',

@@ -111,13 +111,14 @@ export default function AddReview() {
       type: 'select',
       required: true,
       placeholder: 'Select review type',
+      defaultValue: '',
       options: [
         { value: 'Product', label: 'Product' },
         { value: 'Brand', label: 'Brand' },
       ],
       icon: <IconBuildingStore size={16} />,
       span: 12,
-    },
+    },  
     {
       name: 'productId',
       label: 'Product',
@@ -133,6 +134,16 @@ export default function AddReview() {
       dependsOn: 'reviewType',
       showWhen: (values) => values.reviewType === 'Product',
     },
+    {
+      name: 'shopifyProductId',
+      label: 'Shopify Product ID',
+      type: 'text',
+      placeholder: 'Enter Shopify Product ID',
+      required: false,
+      span: 12,
+      dependsOn: 'reviewType',
+      showWhen: (values) => values.reviewType === 'Product',
+    },  
     {
       name: 'brandId',
       label: 'Brand',
@@ -244,6 +255,7 @@ export default function AddReview() {
       placeholder: 'Optional',
       span: 12,
     },
+  
     {
       name: 'privacy_policy',
       label: 'I accept the Privacy Policy',
@@ -259,7 +271,7 @@ export default function AddReview() {
       required: true,
       span: 6,
       icon: <IconCheckbox size={16} />,
-    },
+    },   
     {
       name: 'status',
       label: 'Status',
