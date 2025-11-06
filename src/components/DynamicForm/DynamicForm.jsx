@@ -72,6 +72,9 @@ export default function DynamicForm({
       if (field.type === 'select' && field.filterFunction) {
         const initialValue = initialValues[field.name];
   
+        // avoid reloading if already loaded
+        if (asyncOptions[field.name]) return;
+  
         // 🔹 Case 1: Load default options if loadOnMount is true
         if (field.loadOnMount) {
           setLoadingOptions(prev => ({ ...prev, [field.name]: true }));
@@ -87,7 +90,6 @@ export default function DynamicForm({
         else if (initialValue) {
           try {
             const options = await field.filterFunction('');
-            // Find and keep only the option matching the initial value
             const selectedOption = options.find(opt => opt.value === initialValue);
             if (selectedOption) {
               setAsyncOptions(prev => ({ ...prev, [field.name]: [selectedOption] }));
@@ -98,7 +100,9 @@ export default function DynamicForm({
         }
       }
     });
-  }, [fields, initialValues]);
+    // run only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   
 
   const handleSubmit = async (values) => {
@@ -190,7 +194,7 @@ export default function DynamicForm({
           data: asyncOptions[field.name] || field.options || [],
           searchable: field.searchable,
           clearable: field.clearable,
-          nothingFound: loadingOptions[field.name] ? 'Loading...' : 'No options found',
+          nothingFoundMessage: loadingOptions[field.name] ? 'Loading...' : 'No options found',
           error: form.errors[field.name],
         };
         if (field.filterFunction) {
