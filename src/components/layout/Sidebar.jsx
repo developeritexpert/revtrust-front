@@ -81,15 +81,15 @@ const navigationLinks = [
     icon: IconUser, 
     href: '/admin/profile',
   },
-  { 
-    label: 'Settings', 
-    icon: IconSettings, 
-    href: '/admin/settings',
-    subItems: [
-      { label: 'General', icon: IconSettings, href: '/admin/settings/general' },
-      { label: 'Security', icon: IconUserCog, href: '/admin/settings/security' },
-    ]
-  },
+  // { 
+  //   label: 'Settings', 
+  //   icon: IconSettings, 
+  //   href: '/admin/settings',
+  //   subItems: [
+  //     { label: 'General', icon: IconSettings, href: '/admin/settings/general' },
+  //     { label: 'Security', icon: IconUserCog, href: '/admin/settings/security' },
+  //   ]
+  // },
 ];
 
 function NavLink({ item, collapsed, pathname, onNavigate, level = 0 }) {
