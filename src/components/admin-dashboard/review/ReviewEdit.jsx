@@ -186,7 +186,7 @@ export default function EditReview() {
       label: 'Brand',
       type: 'select',
       placeholder: 'Search and select brand...',
-      required: false,
+      required: true,
       searchable: true,
       clearable: true,
       filterFunction: fetchBrands,
@@ -194,8 +194,8 @@ export default function EditReview() {
       icon: <IconBuildingStore size={16} />,
       span: 12,
       dependsOn: 'reviewType',
-      showWhen: (values) => values.reviewType === 'Brand',
-    },
+      showWhen: (values) => values.reviewType === 'Brand' || values.reviewType === 'Product',
+    },    
     {
       name: 'product_store_rating',
       label: 'Store Rating (0-5)',
@@ -342,15 +342,15 @@ export default function EditReview() {
           });
           return;
         }
-        if (submitData.productId && submitData.shopifyProductId) {
+        if (!submitData.brandId) {
           notifications.show({
             title: 'Validation Error',
-            message: 'Please provide only one: either product or Shopify Product ID',
+            message: 'Please select a brand for the product',
             color: 'red',
           });
           return;
         }
-        delete submitData.brandId;
+      
       } else if (submitData.reviewType === 'Brand') {
         if (!submitData.brandId) {
           notifications.show({
@@ -386,11 +386,11 @@ export default function EditReview() {
       submitData.term_and_condition = Boolean(submitData.term_and_condition);
   
       // 🧹 ADD THIS CLEANUP BLOCK HERE
-      ['productId', 'brandId'].forEach(field => {
-        if (submitData[field] === '' || submitData[field] === null) {
-          delete submitData[field];
-        }
-      });
+      // ['productId', 'brandId'].forEach(field => {
+      //   if (submitData[field] === '' || submitData[field] === null) {
+      //     delete submitData[field];
+      //   }
+      // });
   
       console.log('Updating review data:', submitData);
   
@@ -413,6 +413,13 @@ export default function EditReview() {
     }
   };
   
+  useEffect(() => {
+    if (reviewData && reviewData.shopifyProductId) {
+      setReviewData(prev => ({ ...prev, productId: null }));
+    }
+  }, [reviewData?.shopifyProductId]);
+  
+  
 
   const handleCancel = () => {
     router.push('/admin/reviews');
@@ -421,6 +428,7 @@ export default function EditReview() {
   if (fetchLoading) {
     return <LoadingOverlay visible={true} />;
   }
+
 
   return (
     <DynamicForm

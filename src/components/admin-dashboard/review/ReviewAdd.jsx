@@ -159,8 +159,8 @@ export default function AddReview() {
       icon: <IconBuildingStore size={16} />,
       span: 12,
       dependsOn: 'reviewType',
-      showWhen: (values) => values.reviewType === 'Brand',
-    },
+      showWhen: (values) => values.reviewType === 'Brand' || values.reviewType === 'Product',
+    },    
     {
       name: 'product_store_rating',
       label: 'Store Rating (0-5)',
@@ -308,16 +308,16 @@ export default function AddReview() {
           });
           return;
         }
-        if (submitData.productId && submitData.shopifyProductId) {
+        if (!submitData.brandId) {
           notifications.show({
             title: 'Validation Error',
-            message: 'Please provide only one: either product or Shopify Product ID',
+            message: 'Please select a brand for the product',
             color: 'red',
           });
           return;
         }
-        delete submitData.brandId;
-      } else if (submitData.reviewType === 'Brand') {
+      }
+      else if (submitData.reviewType === 'Brand') {
         if (!submitData.brandId) {
           notifications.show({
             title: 'Validation Error',
