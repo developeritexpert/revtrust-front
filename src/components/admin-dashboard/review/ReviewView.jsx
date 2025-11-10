@@ -22,6 +22,8 @@ import DataTable from '../../../components/DataTable/DataTable';
 import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
 import { REVIEW_API, PRODUCT_API, BRAND_API } from '../../../utils/apiUrl';
+import { useSearchParams } from 'next/navigation';
+
 
 export default function ReviewsPage() {
   const router = useRouter();
@@ -29,31 +31,37 @@ export default function ReviewsPage() {
   const pathname = usePathname();
   const tableRef = useRef();
 
+  const searchParams = useSearchParams();
+  const brandId = searchParams.get('brandId');
+  const type = searchParams.get('type') || 'brand'
+
+
 
   // determine which type of review to show based on route
   const isPendingPage = pathname.includes('/pending');
   const isApprovedPage = pathname.includes('/approved');
 
-  const fetchReviews = useCallback(async (params) => {
-    const token = useAuthStore.getState().token;
-    let queryString = new URLSearchParams(params).toString();
+const fetchReviews = useCallback(async (params) => {
+  const token = useAuthStore.getState().token;
+  const query = new URLSearchParams(params);
 
-      // dynamically filter by status depending on route
-      if (isPendingPage) {
-        queryString += `&status=INACTIVE`;
-      } else if (isApprovedPage) {
-        queryString += `&status=ACTIVE`;
-      }
-        
+  if (isPendingPage) query.append('status', 'INACTIVE');
+  else if (isApprovedPage) query.append('status', 'ACTIVE');
 
-    const response = await axiosWrapper(
-      'get',
-      `${REVIEW_API.GET_ALL_REVIEWS}?${queryString}`,
-      {},
-      token,
-    );
-    return response.data;
-  }, [isPendingPage, isApprovedPage]);
+  if (brandId) query.append('brandId', brandId);
+  if (type) query.append('type', type); // 👈 brand or product
+
+  const response = await axiosWrapper(
+    'get',
+    `${REVIEW_API.GET_ALL_REVIEWS}?${query.toString()}`,
+    {},
+    token
+  );
+
+  return response.data;
+}, [isPendingPage, isApprovedPage, brandId, type]);
+
+
 
   const handleDelete = async (review) => {
     modals.openConfirmModal({

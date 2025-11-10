@@ -43,6 +43,12 @@ export default function BrandsPage() {
   const [embedModalOpened, { open: openEmbedModal, close: closeEmbedModal }] = useDisclosure(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
 
+    // ✅ NEW state for review modal
+  const [reviewModalOpened, { open: openReviewModal, close: closeReviewModal }] = useDisclosure(false);
+  const [selectedReviewBrand, setSelectedReviewBrand] = useState(null);
+
+
+
   const fetchBrands = useCallback(async (params) => {
     const token = useAuthStore.getState().token;
     const queryString = new URLSearchParams(params).toString();
@@ -54,6 +60,7 @@ export default function BrandsPage() {
     );
     return response.data;
   }, []);
+
 
   const handleDelete = async (brand) => {
     modals.openConfirmModal({
@@ -112,7 +119,20 @@ export default function BrandsPage() {
   </div>
   <script src="https://revtrust-front.onrender.com/review-widget.js" defer></script>`;
   };
-  
+
+    // ✅ Open review type modal
+  const handleShowReviewOptions = (brand) => {
+    setSelectedReviewBrand(brand);
+    openReviewModal();
+  };
+
+  const handleRedirectToReviews = (type) => {
+    if (!selectedReviewBrand) return;
+    closeReviewModal();
+    router.push(`/admin/reviews?brandId=${selectedReviewBrand._id}&type=${type}`);
+  };
+
+
   const handleAdd = () => {
     router.push('/admin/brands/add');
   };
@@ -292,6 +312,14 @@ export default function BrandsPage() {
     view: true,
     edit: true,
     delete: true,
+    custom: [
+      {
+        tooltip: 'See Reviews',
+        color: 'blue',
+        icon: <IconMessage size={16} />,
+        onClick: handleShowReviewOptions, // ✅ open modal instead of redirect
+      },
+    ],
   };
 
   return (
@@ -308,6 +336,40 @@ export default function BrandsPage() {
         onView={handleView}
         onDelete={handleDelete}
       />
+
+            {/* ✅ Review Selection Modal */}
+      <Modal
+        opened={reviewModalOpened}
+        onClose={closeReviewModal}
+        centered
+        title={
+          <Group>
+            <IconMessage size={20} />
+            <Text fw={600}>
+              {selectedReviewBrand
+                ? `View Reviews for ${selectedReviewBrand.name}`
+                : 'View Reviews'}
+            </Text>
+          </Group>
+        }
+      >
+        <Stack gap="md">
+          <Button
+            color="blue"
+            fullWidth
+            onClick={() => handleRedirectToReviews('brand')}
+          >
+            🔹 Only Brand Reviews
+          </Button>
+          <Button
+            variant="outline"
+            fullWidth
+            onClick={() => handleRedirectToReviews('all')}
+          >
+            🔸 Brand + Product Reviews
+          </Button>
+        </Stack>
+      </Modal>
 
       {/* ✅ Embed Code Modal */}
       <Modal
