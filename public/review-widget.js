@@ -2,6 +2,8 @@
   if (window.__reviewWidgetLoaded) return;
   window.__reviewWidgetLoaded = true;
 
+  const token = process.env.UNIVERSAL_ADMIN_TOKEN;
+
   // Star SVGs
   const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26" xmlns="http://www.w3.org/2000/svg"><path d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z" fill="#FFBF00"/></svg>`;
   const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26" xmlns="http://www.w3.org/2000/svg"><path d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z" fill="#D9D9D9"/></svg>`;
@@ -209,10 +211,25 @@
 
     try {
       let res;
+
       if (productId) {
-        res = await fetch(`https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&shopifyProductId=${productId}&status=ACTIVE`);
+        res = await fetch(
+          `https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&shopifyProductId=${productId}&status=ACTIVE`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       } else {
-        res = await fetch(`https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&status=ACTIVE`);
+        res = await fetch(
+          `https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&status=ACTIVE`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
 
       const data = await res.json();
