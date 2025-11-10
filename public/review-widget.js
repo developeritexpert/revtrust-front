@@ -2,7 +2,8 @@
   if (window.__reviewWidgetLoaded) return;
   window.__reviewWidgetLoaded = true;
 
-  const token = process.env.UNIVERSAL_ADMIN_TOKEN;
+  const token = NEXT_PUBLIC_UNIVERSAL_ADMIN_TOKEN;
+  console.log(token);
 
   // Star SVGs
   const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26" xmlns="http://www.w3.org/2000/svg"><path d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z" fill="#FFBF00"/></svg>`;
