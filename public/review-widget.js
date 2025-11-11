@@ -2,120 +2,122 @@
   if (window.__reviewWidgetLoaded) return;
   window.__reviewWidgetLoaded = true;
 
-  const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
-  const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
+	const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
+	const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
 
-  const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
+	const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
 
-  function createReviewCard(r) {
-    const rating = Math.round(Number(r.product_store_rating) || 0);
-    const date = new Date(r.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
-    return `
-      <div class="review-item">
-        <div class="reviewer"><span>${r.name || "Anonymous"}</span> 
-        <span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-          <style>
-            .s0 { fill: #000000 } 
-          </style>
-          <g>
-            <path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
-          </g>
-        </svg></span></div>
-        <div class="revReviewDate">${date}</div>
-        <div class="revs-rating-stars">${starsHTML(rating)}</div>
-        <div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div>
-        <div class="review-body">${r.reviewBody || ""}</div>
-      </div>`;
-  }
+	function createReviewCard(r) {
+		const rating = Math.round(Number(r.product_store_rating) || 0);
+		const date = new Date(r.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+		return `
+		  <div class="review-item">
+			<div class="reviewer"><span>${r.name || "Anonymous"}</span> 
+			<span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
+			  <style>
+				.s0 { fill: #000000 } 
+			  </style>
+			  <g>
+				<path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
+			  </g>
+			</svg></span></div>
+			<div class="revReviewDate">${date}</div>
+			<div class="revs-rating-stars">${starsHTML(rating)}</div>
+			<div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div>
+			<div class="review-body">${r.reviewBody || ""}</div>
+		  </div>`;
+	}
 
-  async function initMasonry(list) {
-    if (!window.Masonry) await loadScript("https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js");
-    if (!window.imagesLoaded) await loadScript("https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js");
-    imagesLoaded(list, () => new Masonry(list, { itemSelector: ".review-item", gutter: 20, fitWidth: true }));
-  }
+	async function initMasonry(list) {
+		if (!window.Masonry) await loadScript("https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js");
+		if (!window.imagesLoaded) await loadScript("https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js");
+		imagesLoaded(list, () => new Masonry(list, { itemSelector: ".review-item", gutter: 20, fitWidth: true }));
+	}
 
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = src;
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-  }
+	function loadScript(src) {
+		return new Promise((resolve, reject) => {
+		  const s = document.createElement("script");
+		  s.src = src;
+		  s.onload = resolve;
+		  s.onerror = reject;
+		  document.head.appendChild(s);
+		});
+	}
 
-  async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
-    const url = new URL("/review-widget", window.location.origin);
-    url.searchParams.set("brandId", brandId);
-    if (productId) url.searchParams.set("productId", productId);
-    if (sortBy) url.searchParams.set("sortBy", sortBy);
-    if (order) url.searchParams.set("order", order);
-    if (page) url.searchParams.set("page", page);
-    if (limit) url.searchParams.set("limit", limit);
+	async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
+		const baseURL = window.location.origin; // Calls your Next.js API route
+		const url = new URL("/review-widget", baseURL);
+		url.searchParams.set("brandId", brandId);
+		if (productId) url.searchParams.set("productId", productId);
+		if (sortBy) url.searchParams.set("sortBy", sortBy);
+		if (order) url.searchParams.set("order", order);
+		if (page) url.searchParams.set("page", page);
+		if (limit) url.searchParams.set("limit", limit);
 
-    const res = await fetch(url.toString());
-    if (!res.ok) throw new Error("Failed to fetch reviews");
-    const data = await res.json();
-    return data?.data || [];
-  }
+		const res = await fetch(url.toString());
+		if (!res.ok) throw new Error("Failed to fetch reviews");
+		const data = await res.json();
+		return data?.data || [];
+	}
 
-  function generateDynamicRatingBlock(reviews, totalreviews) {
-    if (!reviews || reviews.length === 0) return `<div class="rating-header"><div class="noReviews"><p>No reviews yet.</p></div>`;
+	function generateDynamicRatingBlock(reviews, totalreviews) {
+		if (!reviews || reviews.length === 0) return `<div class="rating-header"><div class="noReviews"><p>No reviews yet.</p></div>`;
 
-    const ratingCounts = {5:0,4:0,3:0,2:0,1:0};
-    let totalRatingSum = 0, totalRatingCount = 0;
+		const ratingCounts = {5:0,4:0,3:0,2:0,1:0};
+		let totalRatingSum = 0, totalRatingCount = 0;
 
-    reviews.forEach(review => {
-      const ratings = [
-        review.product_store_rating,
-        review.seller_rating,
-        review.product_quality_rating,
-        review.product_price_rating,
-        review.issue_handling_rating
-      ].filter(r => typeof r === 'number' && r > 0);
+		reviews.forEach(review => {
+		  const ratings = [
+			review.product_store_rating,
+			review.seller_rating,
+			review.product_quality_rating,
+			review.product_price_rating,
+			review.issue_handling_rating
+		  ].filter(r => typeof r === 'number' && r > 0);
 
-      const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
-      if (reviewAverage > 0) {
-        const rounded = Math.round(reviewAverage);
-        if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
-        totalRatingSum += reviewAverage;
-        totalRatingCount++;
-      }
-    });
+		  const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
+		  if (reviewAverage > 0) {
+			const rounded = Math.round(reviewAverage);
+			if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
+			totalRatingSum += reviewAverage;
+			totalRatingCount++;
+		  }
+		});
 
-    const totalReviews = totalreviews;
-    const overallRating = totalRatingCount ? totalRatingSum/totalRatingCount : 0;
-    const roundedOverall = overallRating.toFixed(1);
+		const totalReviews = totalreviews;
+		const overallRating = totalRatingCount ? totalRatingSum/totalRatingCount : 0;
+		const roundedOverall = overallRating.toFixed(1);
 
-    const labels = {5:'Excellent',4:'Very Good',3:'Average',2:'Poor',1:'Terrible'};
-    let ratingBarsHTML = '';
-    for (let i=5;i>=1;i--){
-      const count = ratingCounts[i];
-      const percent = totalReviews ? ((count/totalReviews)*100).toFixed(1) : 0;
-      ratingBarsHTML += `
-        <div class="bar">
-          <span class="label">${labels[i]}</span>
-          <div class="progress">
-            <div class="fill" style="width:${percent}%"></div>
-          </div>
-          <span class="count">${count}</span>
-        </div>`;
-    }
+		const labels = {5:'Excellent',4:'Very Good',3:'Average',2:'Poor',1:'Terrible'};
+		let ratingBarsHTML = '';
+		for (let i=5;i>=1;i--){
+		  const count = ratingCounts[i];
+		  const percent = totalReviews ? ((count/totalReviews)*100).toFixed(1) : 0;
+		  ratingBarsHTML += `
+			<div class="bar">
+			  <span class="label">${labels[i]}</span>
+			  <div class="progress">
+				<div class="fill" style="width:${percent}%"></div>
+			  </div>
+			  <span class="count">${count}</span>
+			</div>`;
+		}
 
-    return `
-      <div class="rating-header">
-        <div class="rating-overview">
-          <p class="out-pera">${roundedOverall} out of 5 stars — Rated ${
-              roundedOverall >= 4.5 ? 'Excellent' :
-              roundedOverall >= 4 ? 'Very Good' :
-              roundedOverall >= 3 ? 'Average' :
-              roundedOverall >= 2 ? 'Poor' : 'Terrible'
-            }</p>
-        </div>
-      </div>
-      <div class="rating-bars">${ratingBarsHTML}</div>
-    `;
-  }
+		return `
+		  <div class="rating-header">
+			<div class="rating-overview">
+			  <p class="out-pera">${roundedOverall} out of 5 stars — Rated ${
+				  roundedOverall >= 4.5 ? 'Excellent' :
+				  roundedOverall >= 4 ? 'Very Good' :
+				  roundedOverall >= 3 ? 'Average' :
+				  roundedOverall >= 2 ? 'Poor' : 'Terrible'
+				}</p>
+			</div>
+		  </div>
+		  <div class="rating-bars">${ratingBarsHTML}</div>
+		`;
+	}
+
 
   async function initContainer(container) {
     const brandId = container.getAttribute("data-brandid");
@@ -130,61 +132,21 @@
             <span class="revs-review-count revshimmer">Reviews</span>
           </div>
           <div class="revs-reviewsFilterWrap">
-            <button id="revs-rating-menu-filter" class="revshimmer">
-              <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                <style>
-                .s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-width: 1.3 } 
-                </style>
-                <path class="s0" d="m3.33 4.17h5m0 0c0 0.92 0.75 1.66 1.67 1.66 0.92 0 1.67-0.74 1.67-1.66m-3.34 0c0-0.92 0.75-1.67 1.67-1.67 0.92 0 1.67 0.75 1.67 1.67m0 0h5m-13.34 5.83h10m0 0c0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67 0-0.92-0.75-1.67-1.67-1.67-0.92 0-1.67 0.75-1.67 1.67zm-6.66 5.83h10m-10 0c0-0.92-0.75-1.66-1.67-1.66-0.92 0-1.67 0.74-1.67 1.66 0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67z"/>
-              </svg>
-            </button>
-             <ul class="revs-filter-options" style="display:none;">
+            <button id="revs-rating-menu-filter" class="revshimmer">Sort</button>
+            <ul class="revs-filter-options" style="display:none;">
               <li class="revs-filter-value"><span class="revsSortingTitle">Sort By</span></li>
-              <li class="revs-filter-value">
-                <button data-option="newest">
-                  <div class="rev-sorting-option">Newest</div>
-                  <span class="rev-option-selected">
-                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                  </span>
-                </button>
-              </li>
-              <li class="revs-filter-value" data-option="oldest">
-                <button data-option="oldest">
-                  <div class="rev-sorting-option">Oldest</div>
-                  <span>
-                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                  </span>
-                </button>
-              </li>
-              <li class="revs-filter-value" data-option="popular">
-                <button data-option="popular">
-                  <div class="rev-sorting-option">Most Popular</div>
-                  <span>
-                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                  </span>
-                </button>
-              </li>
-              <li class="revs-filter-value" data-option="rating_highest">
-                <button data-option="rating_highest">
-                  <div class="rev-sorting-option">Highest Rated</div>
-                  <span>
-                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                  </span>
-                </button>
-              </li>
-              <li class="revs-filter-value" data-option="rating_lowest">
-                <button data-option="rating_lowest">
-                  <div class="rev-sorting-option">Lowest Rated</div>
-                  <span>
-                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                  </span>
-                </button>
-              </li>
+              <li class="revs-filter-value"><button data-option="newest">Newest<span></span></button></li>
+              <li class="revs-filter-value"><button data-option="oldest">Oldest<span></span></button></li>
+              <li class="revs-filter-value"><button data-option="popular">Most Popular<span></span></button></li>
+              <li class="revs-filter-value"><button data-option="rating_highest">Highest Rated<span></span></button></li>
+              <li class="revs-filter-value"><button data-option="rating_lowest">Lowest Rated<span></span></button></li>
             </ul>
           </div>
         </div>
         <div class="revs-dropdown-reviews-summary">
-          <div class="revs-dropdown-review-card"><div class="rating-header"> <div class="rating-overview"> <p class="out-pera revshimmer">5 out of 5 stars — Rated</p></div></div><div class="rating-bars"><div class="bar"><span class="label revshimmer">Excellent</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Very Good</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Average</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Poor</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div> <span class="count revshimmer">0</span></div><div class="bar"><span class="label revshimmer">Terrible</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div><span class="count revshimmer">0</span></div></div></div>
+          <div class="revs-dropdown-review-card revshimmer">
+            <p>Loading...</p>
+          </div>
         </div>
         <div class="revs-reviews-list"></div>
         <div class="revs-loadMoreWrap"><button class="revs-load-more-btn" style="display:none;">Load More Reviews</button></div>
@@ -229,11 +191,10 @@
       reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
       totalReviewsLoaded += reviews.length;
 
-      // Check if more pages exist
       loadMoreBtn.style.display = reviews.length === pageSize ? "block" : "none";
       initMasonry(reviewsList);
       reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded>1?'s':''}`;
-      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviewsLoaded)}`;
+      reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
     }
 
     loadMoreBtn.addEventListener("click", () => {
@@ -248,49 +209,50 @@
           span.classList.remove("rev-option-selected")
         );
         btn.querySelector("span")?.classList.add("rev-option-selected");
-        renderReviews(true, currentSort);
+        renderReviews(true);
         btn.closest('.revs-filter-options').style.display = 'none';
       });
     });
 
-    // Initial load
+    // initial load
     renderReviews();
   }
 
-  function initAll() { document.querySelectorAll(".revs-review-widget-container").forEach(initContainer); }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
-  else initAll();
+	function initAll() { document.querySelectorAll(".revs-review-widget-container").forEach(initContainer); }
+	
+	if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
+	else initAll();
 
-  document.querySelectorAll('.revs-reviewsFilterWrap button#revs-rating-menu-filter').forEach(button => {
-    const header = button.closest('.revs-reviews-header');
-    const filterOptions = header.querySelector('.revs-filter-options');
+	document.querySelectorAll('.revs-reviewsFilterWrap button#revs-rating-menu-filter').forEach(button => {
+		const header = button.closest('.revs-reviews-header');
+		const filterOptions = header.querySelector('.revs-filter-options');
 
-    // Toggle on button click
-    button.addEventListener('click', (e) => {
-      e.stopPropagation(); // prevent triggering document click
-      const isVisible = filterOptions.style.display === 'block';
-      // Hide all open dropdowns first
-      document.querySelectorAll('.revs-filter-options').forEach(opt => opt.style.display = 'none');
-      // Then toggle the clicked one
-      filterOptions.style.display = isVisible ? 'none' : 'block';
-    });
+		// Toggle on button click
+		button.addEventListener('click', (e) => {
+		  e.stopPropagation(); // prevent triggering document click
+		  const isVisible = filterOptions.style.display === 'block';
+		  // Hide all open dropdowns first
+		  document.querySelectorAll('.revs-filter-options').forEach(opt => opt.style.display = 'none');
+		  // Then toggle the clicked one
+		  filterOptions.style.display = isVisible ? 'none' : 'block';
+		});
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', (e) => {
-      if (!filterOptions.contains(e.target) && !button.contains(e.target)) {
-        filterOptions.style.display = 'none';
-      }
-    });
-  });
+		// Close dropdown when clicking outside
+		document.addEventListener('click', (e) => {
+		  if (!filterOptions.contains(e.target) && !button.contains(e.target)) {
+			filterOptions.style.display = 'none';
+		  }
+		});
+	});
 
-  setTimeout(function(){
-    document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
-  },1000);
+	setTimeout(function(){
+		document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
+	},1000);
 
-  // Styles
+  // Add CSS
   const style = document.createElement("style");
   style.innerHTML = `
-    .revs-review-widget { max-width: 1100px; margin: 0 auto; font-family: Arial, sans-serif; }
+	.revs-review-widget { max-width: 1100px; margin: 0 auto; font-family: Arial, sans-serif; }
     .review-title { font-size: 22px; font-weight: 600; margin-bottom: 20px; text-align: center; }
     .revsPlaceholderhide{
       display:none;
