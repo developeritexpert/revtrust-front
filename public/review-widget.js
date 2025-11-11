@@ -2,8 +2,6 @@
   if (window.__reviewWidgetLoaded) return;
   window.__reviewWidgetLoaded = true;
 
-  const token = "__WIDGET_TOKEN__";
-
   const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
   const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
 
@@ -47,21 +45,15 @@
   }
 
   async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
-    const url = new URL("https://revtrust-br7i.onrender.com/api/review/all");
+    const url = new URL("/review-widget", window.location.origin);
     url.searchParams.set("brandId", brandId);
-    if (productId) url.searchParams.set("shopifyProductId", productId);
+    if (productId) url.searchParams.set("productId", productId);
     if (sortBy) url.searchParams.set("sortBy", sortBy);
     if (order) url.searchParams.set("order", order);
     if (page) url.searchParams.set("page", page);
     if (limit) url.searchParams.set("limit", limit);
 
-    const res = await fetch(url.toString(), {
-      method: "GET",
-      headers: {
-        "Authorization": `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(url.toString());
     const data = await res.json();
     return data?.data?.data || [];
   }

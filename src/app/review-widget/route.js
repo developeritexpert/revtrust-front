@@ -1,17 +1,15 @@
-import fs from "fs";
-import path from "path";
+import { getReviews } from '../../../lib/reviewService';
 
-export async function GET() {
-  // 1. Read JS source file
-  const filePath = path.join(process.cwd(), "lib", "review-widget.js");
-  let js = fs.readFileSync(filePath, "utf-8");
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const brandId = searchParams.get("brandId");
+  const productId = searchParams.get("productId");
+  const sortBy = searchParams.get("sortBy");
+  const order = searchParams.get("order");
+  const page = searchParams.get("page");
+  const limit = searchParams.get("limit");
 
-  // 2. Replace placeholder with real token
-  const token = process.env.NEXT_PUBLIC_UNIVERSAL_ADMIN_TOKEN || "";
-  js = js.replace(/__WIDGET_TOKEN__/g, token);
+  const reviews = await getReviews({ brandId, productId, sortBy, order, page, limit });
 
-  // 3. Serve as JavaScript
-  return new Response(js, {
-    headers: { "Content-Type": "application/javascript" },
-  });
+  return new Response(JSON.stringify({ data: reviews }), { status: 200 });
 }
