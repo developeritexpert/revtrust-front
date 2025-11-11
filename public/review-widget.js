@@ -45,7 +45,8 @@
   }
 
   async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
-    const url = new URL("/review-widget", window.location.origin);
+    const baseURL = 'https://revtrust-front.onrender.com';
+    const url = new URL("/review-widget", baseURL);
     url.searchParams.set("brandId", brandId);
     if (productId) url.searchParams.set("productId", productId);
     if (sortBy) url.searchParams.set("sortBy", sortBy);
