@@ -119,7 +119,7 @@
 	}
 
 
-  async function initContainer(container) {
+   async function initContainer(container) {
     const brandId = container.getAttribute("data-brandid");
     const productId = container.getAttribute("data-product-id");
     if (!brandId) return;
@@ -132,21 +132,61 @@
             <span class="revs-review-count revshimmer">Reviews</span>
           </div>
           <div class="revs-reviewsFilterWrap">
-            <button id="revs-rating-menu-filter" class="revshimmer">Sort</button>
-            <ul class="revs-filter-options" style="display:none;">
+            <button id="revs-rating-menu-filter" class="revshimmer">
+              <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
+                <style>
+                .s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-width: 1.3 } 
+                </style>
+                <path class="s0" d="m3.33 4.17h5m0 0c0 0.92 0.75 1.66 1.67 1.66 0.92 0 1.67-0.74 1.67-1.66m-3.34 0c0-0.92 0.75-1.67 1.67-1.67 0.92 0 1.67 0.75 1.67 1.67m0 0h5m-13.34 5.83h10m0 0c0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67 0-0.92-0.75-1.67-1.67-1.67-0.92 0-1.67 0.75-1.67 1.67zm-6.66 5.83h10m-10 0c0-0.92-0.75-1.66-1.67-1.66-0.92 0-1.67 0.74-1.67 1.66 0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67z"/>
+              </svg>
+            </button>
+             <ul class="revs-filter-options" style="display:none;">
               <li class="revs-filter-value"><span class="revsSortingTitle">Sort By</span></li>
-              <li class="revs-filter-value"><button data-option="newest">Newest<span></span></button></li>
-              <li class="revs-filter-value"><button data-option="oldest">Oldest<span></span></button></li>
-              <li class="revs-filter-value"><button data-option="popular">Most Popular<span></span></button></li>
-              <li class="revs-filter-value"><button data-option="rating_highest">Highest Rated<span></span></button></li>
-              <li class="revs-filter-value"><button data-option="rating_lowest">Lowest Rated<span></span></button></li>
+              <li class="revs-filter-value">
+                <button data-option="newest">
+                  <div class="rev-sorting-option">Newest</div>
+                  <span class="rev-option-selected">
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="oldest">
+                <button data-option="oldest">
+                  <div class="rev-sorting-option">Oldest</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="popular">
+                <button data-option="popular">
+                  <div class="rev-sorting-option">Most Popular</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="rating_highest">
+                <button data-option="rating_highest">
+                  <div class="rev-sorting-option">Highest Rated</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="rating_lowest">
+                <button data-option="rating_lowest">
+                  <div class="rev-sorting-option">Lowest Rated</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
             </ul>
           </div>
         </div>
         <div class="revs-dropdown-reviews-summary">
-          <div class="revs-dropdown-review-card revshimmer">
-            <p>Loading...</p>
-          </div>
+          <div class="revs-dropdown-review-card"><div class="rating-header"> <div class="rating-overview"> <p class="out-pera revshimmer">5 out of 5 stars — Rated</p></div></div><div class="rating-bars"><div class="bar"><span class="label revshimmer">Excellent</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Very Good</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Average</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Poor</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div> <span class="count revshimmer">0</span></div><div class="bar"><span class="label revshimmer">Terrible</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div><span class="count revshimmer">0</span></div></div></div>
         </div>
         <div class="revs-reviews-list"></div>
         <div class="revs-loadMoreWrap"><button class="revs-load-more-btn" style="display:none;">Load More Reviews</button></div>
@@ -191,10 +231,11 @@
       reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
       totalReviewsLoaded += reviews.length;
 
+      // Check if more pages exist
       loadMoreBtn.style.display = reviews.length === pageSize ? "block" : "none";
       initMasonry(reviewsList);
       reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded>1?'s':''}`;
-      reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviewsLoaded)}`;
     }
 
     loadMoreBtn.addEventListener("click", () => {
@@ -209,12 +250,12 @@
           span.classList.remove("rev-option-selected")
         );
         btn.querySelector("span")?.classList.add("rev-option-selected");
-        renderReviews(true);
+        renderReviews(true, currentSort);
         btn.closest('.revs-filter-options').style.display = 'none';
       });
     });
 
-    // initial load
+    // Initial load
     renderReviews();
   }
 
