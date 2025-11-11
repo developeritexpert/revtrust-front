@@ -45,8 +45,7 @@
   }
 
   async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
-    const baseURL = 'https://revtrust-front.onrender.com';
-    const url = new URL("/review-widget", baseURL);
+    const url = new URL("/review-widget", window.location.origin);
     url.searchParams.set("brandId", brandId);
     if (productId) url.searchParams.set("productId", productId);
     if (sortBy) url.searchParams.set("sortBy", sortBy);
@@ -55,8 +54,9 @@
     if (limit) url.searchParams.set("limit", limit);
 
     const res = await fetch(url.toString());
+    if (!res.ok) throw new Error("Failed to fetch reviews");
     const data = await res.json();
-    return data?.data?.data || [];
+    return data?.data || [];
   }
 
   function generateDynamicRatingBlock(reviews, totalreviews) {
