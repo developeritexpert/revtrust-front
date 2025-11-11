@@ -4,33 +4,14 @@
 
   const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkFETUlOX1NUQVRJQ19UT0tFTiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc2Mjc2MDA5OX0.eb12wid_2TMw9c0jyGxJ98M7lV-pZvuL8jxbg_HkN0o';
 
-  // Star SVGs
-  const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26" xmlns="http://www.w3.org/2000/svg"><path d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z" fill="#FFBF00"/></svg>`;
-  const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26" xmlns="http://www.w3.org/2000/svg"><path d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z" fill="#D9D9D9"/></svg>`;
+  const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
+  const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
 
-  // Load external JS
-  function loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = src;
-      s.async = true;
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-  }
-
-  // Generate star markup
   const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
 
-  // Create a single review card
   function createReviewCard(r) {
     const rating = Math.round(Number(r.product_store_rating) || 0);
-    const date = new Date(r.createdAt).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    const date = new Date(r.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
     return `
       <div class="review-item">
         <div class="reviewer"><span>${r.name || "Anonymous"}</span> 
@@ -42,10 +23,47 @@
             <path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
           </g>
         </svg></span></div>
-        <div class="reviewDate">${date}</div>
+        <div class="revReviewDate">${date}</div>
         <div class="revs-rating-stars">${starsHTML(rating)}</div>
+        <div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div>
         <div class="review-body">${r.reviewBody || ""}</div>
       </div>`;
+  }
+
+  async function initMasonry(list) {
+    if (!window.Masonry) await loadScript("https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js");
+    if (!window.imagesLoaded) await loadScript("https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js");
+    imagesLoaded(list, () => new Masonry(list, { itemSelector: ".review-item", gutter: 20, fitWidth: true }));
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
+    const url = new URL("https://revtrust-br7i.onrender.com/api/review/all");
+    url.searchParams.set("brandId", brandId);
+    if (productId) url.searchParams.set("shopifyProductId", productId);
+    if (sortBy) url.searchParams.set("sortBy", sortBy);
+    if (order) url.searchParams.set("order", order);
+    if (page) url.searchParams.set("page", page);
+    if (limit) url.searchParams.set("limit", limit);
+
+    const res = await fetch(url.toString(), {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await res.json();
+    return data?.data?.data || [];
   }
 
   function generateDynamicRatingBlock(reviews, totalreviews) {
@@ -106,189 +124,149 @@
     `;
   }
 
-  async function initMasonry(list) {
-    await loadScript("https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js");
-    await loadScript("https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js");
-
-    // Wait for images then initialize Masonry
-    imagesLoaded(list, function () {
-      new Masonry(list, {
-        itemSelector: ".review-item",
-        gutter: 20,
-        fitWidth: true,
-      });
-    });
-  }
-
   async function initContainer(container) {
     const brandId = container.getAttribute("data-brandid");
-    const productId = container.getAttribute("data-product-id")
+    const productId = container.getAttribute("data-product-id");
     if (!brandId) return;
 
     container.innerHTML = `
       <div class="revs-review-widget">
         <div class="revs-reviews-header">
           <div class="revs-reviewsInfoWrap">
-            <div class="revs-rating-stars">
-              ${STAR_YELLOW.repeat(5)}
-            </div>
-            <span class="revs-review-count">Loading...</span>
+            <div class="revs-rating-stars">${STAR_YELLOW.repeat(5)}</div>
+            <span class="revs-review-count revshimmer">Reviews</span>
           </div>
           <div class="revs-reviewsFilterWrap">
-            <button id="revs-rating-menu-filter" style="display:none;">
-              <span id="revs-rating-filter-icon">
-                <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                  <style>
-                    .s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-width: 1.3 } 
-                  </style>
-                  <path class="s0" d="m3.33 4.17h5m0 0c0 0.92 0.75 1.66 1.67 1.66 0.92 0 1.67-0.74 1.67-1.66m-3.34 0c0-0.92 0.75-1.67 1.67-1.67 0.92 0 1.67 0.75 1.67 1.67m0 0h5m-13.34 5.83h10m0 0c0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67 0-0.92-0.75-1.67-1.67-1.67-0.92 0-1.67 0.75-1.67 1.67zm-6.66 5.83h10m-10 0c0-0.92-0.75-1.66-1.67-1.66-0.92 0-1.67 0.74-1.67 1.66 0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67z"/>
-                </svg>
-              </span>
+            <button id="revs-rating-menu-filter" class="revshimmer">
+              <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
+                <style>
+                .s0 { fill: none;stroke: #000000;stroke-linecap: round;stroke-width: 1.3 } 
+                </style>
+                <path class="s0" d="m3.33 4.17h5m0 0c0 0.92 0.75 1.66 1.67 1.66 0.92 0 1.67-0.74 1.67-1.66m-3.34 0c0-0.92 0.75-1.67 1.67-1.67 0.92 0 1.67 0.75 1.67 1.67m0 0h5m-13.34 5.83h10m0 0c0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67 0-0.92-0.75-1.67-1.67-1.67-0.92 0-1.67 0.75-1.67 1.67zm-6.66 5.83h10m-10 0c0-0.92-0.75-1.66-1.67-1.66-0.92 0-1.67 0.74-1.67 1.66 0 0.92 0.75 1.67 1.67 1.67 0.92 0 1.67-0.75 1.67-1.67z"/>
+              </svg>
             </button>
-          </div>
-          <ul class="revs-filter-options" style="display:none;">
-            <li class="revs-filter-value">
-              <button data-option="newest">
-                <div class="rev-sorting-option">Newest</div>
-                <span class="rev-option-selected">
-                  <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                </span>
-              </button>
-            </li>
-            <li class="revs-filter-value" data-option="oldest">
-              <button data-option="oldest">
-                <div class="rev-sorting-option">Oldest</div>
-                <span>
-                  <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                </span>
-              </button>
-            </li>
-            <li class="revs-filter-value" data-option="popular">
-              <button data-option="popular">
-                <div class="rev-sorting-option">Most Popular</div>
-                <span>
-                  <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                </span>
-              </button>
-            </li>
-            <li class="revs-filter-value" data-option="rating_highest">
-              <button data-option="rating_highest">
-                <div class="rev-sorting-option">Highest Rated</div>
-                <span>
-                  <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                </span>
-              </button>
-            </li>
-            <li class="revs-filter-value" data-option="rating_lowest">
-              <button data-option="rating_lowest">
-                <div class="rev-sorting-option">Lowest Rated</div>
-                <span>
-                  <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
-                </span>
-              </button>
-            </li>
-          </ul>
-          <div class="revs-header-chevron" style="display:none;">
-            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="revs-chevron-open">
-              <path d="M7.11098 5.15691L2.16098 0.206909L0.746979 1.62091L7.11098 7.98491L13.475 1.62091L12.061 0.206911L7.11098 5.15691Z" fill="black"></path>
-            </svg>
-            <svg width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg" class="revs-chevron-closed revs-chevron-hide">
-              <path d="M6.88902 3.03498L11.839 7.98499L13.253 6.57099L6.88902 0.206985L0.525021 6.57098L1.93902 7.98498L6.88902 3.03498Z" fill="black"></path>
-            </svg>
+             <ul class="revs-filter-options" style="display:none;">
+              <li class="revs-filter-value"><span class="revsSortingTitle">Sort By</span></li>
+              <li class="revs-filter-value">
+                <button data-option="newest">
+                  <div class="rev-sorting-option">Newest</div>
+                  <span class="rev-option-selected">
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="oldest">
+                <button data-option="oldest">
+                  <div class="rev-sorting-option">Oldest</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="popular">
+                <button data-option="popular">
+                  <div class="rev-sorting-option">Most Popular</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="rating_highest">
+                <button data-option="rating_highest">
+                  <div class="rev-sorting-option">Highest Rated</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+              <li class="revs-filter-value" data-option="rating_lowest">
+                <button data-option="rating_lowest">
+                  <div class="rev-sorting-option">Lowest Rated</div>
+                  <span>
+                    <svg width="17" height="13" viewBox="0 0 17 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.364 9.28895L15.556 0.0959473L16.971 1.50995L6.364 12.1169L0 5.75295L1.414 4.33895L6.364 9.28895Z" fill="black"></path></svg>
+                  </span>
+                </button>
+              </li>
+            </ul>
           </div>
         </div>
         <div class="revs-dropdown-reviews-summary">
-          <div class="revs-dropdown-review-card"></div>
+          <div class="revs-dropdown-review-card"><div class="rating-header"> <div class="rating-overview"> <p class="out-pera revshimmer">5 out of 5 stars — Rated</p></div></div><div class="rating-bars"><div class="bar"><span class="label revshimmer">Excellent</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Very Good</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Average</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Poor</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div> <span class="count revshimmer">0</span></div><div class="bar"><span class="label revshimmer">Terrible</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div><span class="count revshimmer">0</span></div></div></div>
         </div>
-        <div class="revs-reviews-list">Loading reviews...</div>
+        <div class="revs-reviews-list"></div>
         <div class="revs-loadMoreWrap"><button class="revs-load-more-btn" style="display:none;">Load More Reviews</button></div>
       </div>`;
 
-    const list = container.querySelector(".revs-reviews-list");
+    const reviewsList = container.querySelector(".revs-reviews-list");
     const reviewCountEl = container.querySelector(".revs-review-count");
     const reviewsCard = container.querySelector('.revs-dropdown-review-card');
     const loadMoreBtn = container.querySelector(".revs-load-more-btn");
 
-    try {
-      let res;
+    let currentSort = "newest";
+    let currentPage = 1;
+    const pageSize = 5;
+    let totalReviewsLoaded = 0;
 
-      if (productId) {
-        res = await fetch(
-          `https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&shopifyProductId=${productId}&status=ACTIVE`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-      } else {
-        res = await fetch(
-          `https://revtrust-br7i.onrender.com/api/review/all?brandId=${brandId}&status=ACTIVE`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    async function renderReviews(reset=false) {
+      if (reset) {
+        currentPage = 1;
+        reviewsList.innerHTML = "";
+        totalReviewsLoaded = 0;
+        loadMoreBtn.style.display = "none";
       }
 
-      const data = await res.json();
-      const reviews = data?.data?.data || [];
-      const totalReviews = reviews.length;
-      let visibleCount = 5;
+      const sortMapping = {
+        newest: { sortBy: "createdAt", order: "desc" },
+        oldest: { sortBy: "createdAt", order: "asc" },
+        popular: { sortBy: "product_quality_rating", order: "desc" },
+        rating_highest: { sortBy: "product_store_rating", order: "desc" },
+        rating_lowest: { sortBy: "product_store_rating", order: "asc" },
+      };
 
-      if (!reviews.length) {
-        list.innerHTML = `<p>No reviews yet.</p>`;
+      const { sortBy, order } = sortMapping[currentSort] || {};
+      const reviews = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
+
+      if (!reviews.length && totalReviewsLoaded === 0) {
+        reviewsList.innerHTML = `<p>No reviews yet.</p>`;
         reviewCountEl.textContent = "No reviews";
+        loadMoreBtn.style.display = "none";
         return;
       }
 
-      function renderVisibleReviews() {
-        const visible = reviews
-          .filter((r) => r.status === "ACTIVE")
-          .slice(0, visibleCount)
-          .map((r) => createReviewCard(r))
-          .join("");
-        list.innerHTML = visible;
-        if (visibleCount < reviews.length) {
-          loadMoreBtn.style.display = "block";
-        } else {
-          loadMoreBtn.style.display = "none";
-        }
-        initMasonry(list);
-      }
+      reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
+      totalReviewsLoaded += reviews.length;
 
-      loadMoreBtn.addEventListener("click", () => {
-        visibleCount += 10;
-        renderVisibleReviews();
-      });
-
-      renderVisibleReviews();
-
-      /* list.innerHTML = reviews
-        .filter((r) => r.status === "ACTIVE")
-        .map((r) => createReviewCard(r))
-        .join(""); */
-
-      reviewCountEl.textContent = `${reviews.length} Review${reviews.length > 1 ? "s" : ""}`;
-      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviews)}`;
-
-      // await initMasonry(list);
-    } catch (err) {
-      console.error("Error loading reviews:", err);
-      list.innerHTML = `<p>Failed to load reviews.</p>`;
+      // Check if more pages exist
+      loadMoreBtn.style.display = reviews.length === pageSize ? "block" : "none";
+      initMasonry(reviewsList);
+      reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded>1?'s':''}`;
+      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviewsLoaded)}`;
     }
+
+    loadMoreBtn.addEventListener("click", () => {
+      currentPage++;
+      renderReviews();
+    });
+
+    container.querySelectorAll(".revs-filter-options li button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        currentSort = btn.getAttribute("data-option");
+        container.querySelectorAll(".revs-filter-options li span").forEach(span => 
+          span.classList.remove("rev-option-selected")
+        );
+        btn.querySelector("span")?.classList.add("rev-option-selected");
+        renderReviews(true, currentSort);
+        btn.closest('.revs-filter-options').style.display = 'none';
+      });
+    });
+
+    // Initial load
+    renderReviews();
   }
 
-  function initAll() {
-    document.querySelectorAll(".revs-review-widget-container").forEach(initContainer);
-  }
-
-  if (document.readyState === "loading")
-    document.addEventListener("DOMContentLoaded", initAll);
+  function initAll() { document.querySelectorAll(".revs-review-widget-container").forEach(initContainer); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
   else initAll();
-
-
 
   document.querySelectorAll('.revs-reviewsFilterWrap button#revs-rating-menu-filter').forEach(button => {
     const header = button.closest('.revs-reviews-header');
@@ -312,84 +290,18 @@
     });
   });
 
-
-  /* const sortSelect = document.querySelector('.brandAllReviews .sort-dropdown #sort');
-  let brandID = atob(encodedID);
-  if (sortSelect) {
-    sortSelect.addEventListener('change', async function() {
-      const option = this.value;
-      let orderby = '';
-      let sortby = '';
-      const reviewsContainer = document.querySelector('.revs-reviews-list');
-
-      if (option) {
-        if (option === 'newest') {
-          sortby = 'createdAt';
-          orderby = 'desc';
-        } else if (option === 'oldest') {
-          sortby = 'createdAt';
-          orderby = 'asc';
-        } else if (option === 'popular') {
-          sortby = 'product_quality_rating';
-          orderby = 'desc';
-        } else if (option === 'rating_highest') {
-          sortby = 'product_store_rating';
-          orderby = 'desc';
-        }else if (option === 'rating_lowest') {
-          sortby = 'product_store_rating';
-          orderby = 'asc';
-        }
-
-        try {
-          const reviewResponse = await fetch(
-            `https://revstrust.myshopify.com/apps/rev-proxy/api/review/all?brandId=${brandID}&sortBy=${sortby}&order=${orderby}`
-          );
-
-          if (!reviewResponse.ok) throw new Error(`Review API failed: ${reviewResponse.status}`);
-
-          const data = await reviewResponse.json();
-          const reviews = data?.data?.data || [];
-          const pagination = data?.data?.pagination || [];
-
-          if (reviewsContainer) {
-
-            if (reviews.length > 0) {
-              reviewsContainer.innerHTML = `
-                ${reviews.map(r => `
-                  <div class="review-item">
-                    <div class="reviewer"><span>${r.name || "Anonymous"}</span> 
-                    <span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                      <style>
-                        .s0 { fill: #000000 } 
-                      </style>
-                      <g>
-                        <path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
-                      </g>
-                    </svg></span></div>
-                    <div class="reviewDate">${date}</div>
-                    <div class="revs-rating-stars">${starsHTML(rating)}</div>
-                    <div class="review-body">${r.reviewBody || ""}</div>
-                  </div>
-                `).join('')}
-              `;
-            } else {
-              reviewsContainer.innerHTML = `<p class="no-reviews">No reviews found for this brand.</p>`;
-            }
-          }
-
-        } catch (error) {
-          console.log('Error fetching sorted reviews:', error);
-        }
-      }
-    });
-  } */
-
+  setTimeout(function(){
+    document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
+  },1000);
 
   // Styles
   const style = document.createElement("style");
   style.innerHTML = `
     .revs-review-widget { max-width: 1100px; margin: 0 auto; font-family: Arial, sans-serif; }
     .review-title { font-size: 22px; font-weight: 600; margin-bottom: 20px; text-align: center; }
+    .revsPlaceholderhide{
+      display:none;
+    }
     .revs-reviews-list { margin: 0 auto; }
     .revs-reviews-header .revs-reviewsInfoWrap {
       display: flex;
@@ -424,7 +336,7 @@
     }
     .review-item:hover { transform: translateY(-4px); }
     .reviewer { font-weight: 600; margin-bottom: 4px; }
-    .reviewDate { font-size: 12px; color: #888; margin-bottom: 8px; }
+    .revReviewDate { font-size: 12px; color: #888; margin-bottom: 8px; }
     .revs-rating-stars { display: flex; gap: 4px; margin-bottom: 10px; }
     .review-body { font-size: 14px; color: #333; line-height: 1.4; }
     .revs-review-widget-container .revs-dropdown-reviews-summary {
@@ -511,7 +423,7 @@
       line-height: 0;
     }
     .revs-review-widget-container ul.revs-filter-options {
-      width: 275px;
+      width: 250px;
       margin-top: 4px;
       text-align: left;
       position: absolute;
@@ -526,7 +438,7 @@
       transform-origin: 100% 0px;
       right: 0;
       top: 40px;
-      z-index: 9;
+      z-index:9;
     }
     .revs-review-widget-container ul.revs-filter-options li button {
       border: 0;
@@ -536,8 +448,9 @@
       cursor: pointer;
       background: none;
       width: 100%;
-      padding-bottom: 20px;
+      padding: 0 0 20px 0;
       color: #000000;
+      font-size:14px;
     }
     .revs-review-widget-container ul.revs-filter-options button span {
       display: none;
@@ -545,6 +458,43 @@
     .revs-review-widget-container ul.revs-filter-options button span.rev-option-selected {
       display: block;
     }
+    .revFlex{
+      display:flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .revs-review-widget-container ul.revs-filter-options li.revs-filter-value span.revsSortingTitle {
+      font-weight: 600;
+      font-size: 18px;
+      margin-bottom: 20px;
+      display: block;
+    }
+    .revs-review-widget .revs-reviews-list .review-item .revReviewTitle h3 {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+    .revshimmer {
+      position: relative;
+      background: linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%) !important;
+      margin-bottom: 10px !important;
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite linear;
+      color: transparent !important;      
+      border-radius: 4px;                
+      border-color: #e3e3e3;
+      box-shadow: none;
+    }
+    /* Hide all images completely */
+    .revshimmer img {
+      opacity:0 !important;
+    }
+
+    /* Shimmer keyframes */
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }  
+
     @keyframes growOut{
       0% {
         opacity: 0;
@@ -555,11 +505,7 @@
         transform: scale(1);
       }
     }
-    @media only screen and (max-width: 575px){
-      .revs-review-widget-container{
-        padding: 0 20px;
-      }
-    }
   `;
   document.head.appendChild(style);
+
 })();
