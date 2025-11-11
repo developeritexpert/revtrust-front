@@ -45,8 +45,8 @@
 	}
 
 	async function fetchReviews({ brandId, productId, sortBy, order, page, limit }) {
-		const baseURL = window.location.origin; // Calls your Next.js API route
-		const url = new URL("/review-widget", baseURL);
+    const baseURL = "https://revtrust-front.onrender.com"; // Your Next.js deployed URL
+    const url = new URL("/review-widget", baseURL);
 		url.searchParams.set("brandId", brandId);
 		if (productId) url.searchParams.set("productId", productId);
 		if (sortBy) url.searchParams.set("sortBy", sortBy);
