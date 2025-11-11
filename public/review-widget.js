@@ -119,7 +119,7 @@
 	}
 
 
-  async function initContainer(container) {
+   async function initContainer(container) {
     const brandId = container.getAttribute("data-brandid");
     const productId = container.getAttribute("data-product-id");
     if (!brandId) return;
@@ -231,10 +231,11 @@
       reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
       totalReviewsLoaded += reviews.length;
 
+      // Check if more pages exist
       loadMoreBtn.style.display = reviews.length === pageSize ? "block" : "none";
       initMasonry(reviewsList);
       reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded>1?'s':''}`;
-      reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviewsLoaded)}`;
     }
 
     loadMoreBtn.addEventListener("click", () => {
@@ -249,12 +250,12 @@
           span.classList.remove("rev-option-selected")
         );
         btn.querySelector("span")?.classList.add("rev-option-selected");
-        renderReviews(true);
+        renderReviews(true, currentSort);
         btn.closest('.revs-filter-options').style.display = 'none';
       });
     });
 
-    // initial load
+    // Initial load
     renderReviews();
   }
 
