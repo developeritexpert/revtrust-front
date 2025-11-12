@@ -75,13 +75,7 @@
         url.searchParams.set("brandId", brandId);
       }
 
-      const res = await fetch(url.toString(), {
-        method: "GET",
-        headers: {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(url.toString());
 
       if (!res.ok) throw new Error("Failed to fetch total reviews");
       const data = await res.json();
