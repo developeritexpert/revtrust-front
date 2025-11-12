@@ -29,8 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let totalReviewsLoaded = 0;
 
   async function fetchAllReviews({ brandId, sortBy = "createdAt", order = "desc", page = 1, limit = 5 }) {
-    const baseURL = "https://revtrust-br7i.onrender.com/api/review/all";
-    const url = new URL(baseURL);
+    const baseURL = "https://revtrust-front.onrender.com";
+    const url = new URL("/review-widget", baseURL);
     url.searchParams.set("brandId", brandId);
     url.searchParams.set("sortBy", sortBy);
     url.searchParams.set("order", order);
