@@ -67,7 +67,7 @@
 
       // Add query parameters safely
       if (productId) {
-        url.searchParams.set("shopifyProductId", productId);
+        url.searchParams.set("productId", productId);
       }
 
       // Example for brandId as well
