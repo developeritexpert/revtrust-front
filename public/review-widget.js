@@ -81,8 +81,8 @@
       const data = await res.json();
       let totalReviews = 0;
       // Make sure the response structure is valid
-      if (data?.data?.data) {
-        totalReviews = data.data.data.length;
+      if (data?.data) {
+        totalReviews = data.data.length;
       }
 
       // Only set if parentContainer exists and totalReviews is a valid number
@@ -176,6 +176,8 @@
         }
       }
     }
+
+    console.log(totalReviewsCount);
 
     container.innerHTML = `
       <div class="revs-review-widget">
