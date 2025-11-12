@@ -34,7 +34,7 @@ import { useDisclosure } from '@mantine/hooks';
 import DataTable from '../../../components/DataTable/DataTable';
 import useAuthStore from '../../../store/useAuthStore';
 import { axiosWrapper } from '../../../utils/api';
-import { BRAND_API } from '../../../utils/apiUrl';
+import { BRAND_API ,REVIEW_API} from '../../../utils/apiUrl';
 import { useRef, useState } from 'react';
 
 export default function BrandsPage() {
@@ -48,18 +48,54 @@ export default function BrandsPage() {
   const [selectedReviewBrand, setSelectedReviewBrand] = useState(null);
 
 
+  const fetchReviewCountForBrand = async (brandId) => {
+    try {
+      const token = useAuthStore.getState().token;
+  
+      // We'll hit the same /reviews endpoint with ?brandId and type=all
+      const response = await axiosWrapper(
+        'get',
+        `${REVIEW_API.GET_ALL_REVIEWS}?brandId=${brandId}&type=all`,
+        {},
+        token
+      );
+  
+      // Assuming response.data.data contains reviews array
+      return response?.data?.data?.length || 0;
+    } catch (err) {
+      console.error('Error fetching review count for brand:', err);
+      return 0;
+    }
+  };
+  
 
   const fetchBrands = useCallback(async (params) => {
     const token = useAuthStore.getState().token;
     const queryString = new URLSearchParams(params).toString();
+  
     const response = await axiosWrapper(
       'get',
       `${BRAND_API.GET_ALL_BRANDS}?${queryString}`,
       {},
-      token,
+      token
     );
-    return response.data;
+  
+    let brands = response.data.data || [];
+  
+    // ✅ Fetch accurate review counts
+    const updatedBrands = await Promise.all(
+      brands.map(async (brand) => {
+        const accurateCount = await fetchReviewCountForBrand(brand._id);
+        return {
+          ...brand,
+          totalReviews: accurateCount, // Replace mismatched count
+        };
+      })
+    );
+  
+    return { ...response.data, data: updatedBrands };
   }, []);
+  
 
 
   const handleDelete = async (brand) => {
@@ -194,13 +230,26 @@ export default function BrandsPage() {
       sortField: 'totalReviews',
       render: (item) => (
         <Group gap={6}>
-          <IconMessage size={14} opacity={0.6} />
-          <Text size="sm" fw={500}>
+          <ActionIcon
+            variant="subtle"
+            color="blue"
+            onClick={() => handleShowReviewOptions(item)}
+            title="View Reviews"
+          >
+            <IconMessage size={14} opacity={0.6} />
+          </ActionIcon>
+          <Text
+            size="sm"
+            fw={500}
+            style={{ cursor: 'pointer' }}
+            onClick={() => handleShowReviewOptions(item)}
+          >
             {item.totalReviews || 0}
           </Text>
         </Group>
       )
     },
+    
     {
       key: 'email',
       header: 'Email',
@@ -312,14 +361,6 @@ export default function BrandsPage() {
     view: true,
     edit: true,
     delete: true,
-    custom: [
-      {
-        tooltip: 'See Reviews',
-        color: 'blue',
-        icon: <IconMessage size={16} />,
-        onClick: handleShowReviewOptions, // ✅ open modal instead of redirect
-      },
-    ],
   };
 
   return (
@@ -372,85 +413,116 @@ export default function BrandsPage() {
       </Modal>
 
       {/* ✅ Embed Code Modal */}
-      <Modal
-        opened={embedModalOpened}
-        onClose={closeEmbedModal}
-        title={
-          <Group>
-            <IconCode size={20} />
-            <Text fw={600}>Shopify Embed Code</Text>
-          </Group>
-        }
-        size="lg"
-      >
-        {selectedBrand && (
-          <Stack gap="md">
-            <Box>
-              <Text size="sm" fw={500} mb="xs">Brand:</Text>
-              <Group gap="sm">
-                <Avatar src={selectedBrand.logoUrl} size="sm" radius="xl">
-                  {selectedBrand.name?.charAt(0)?.toUpperCase()}
-                </Avatar>
-                <Text size="sm">{selectedBrand.name}</Text>
-              </Group>
-            </Box>
+{/* ✅ Embed Code Modal */}
+<Modal
+  opened={embedModalOpened}
+  onClose={closeEmbedModal}
+  title={
+    <Group>
+      <IconCode size={20} />
+      <Text fw={600}>Shopify Embed Code</Text>
+    </Group>
+  }
+  size="lg"
+>
+  {selectedBrand && (
+    <Stack gap="md">
+      <Box>
+        <Text size="sm" fw={500} mb="xs">Brand:</Text>
+        <Group gap="sm">
+          <Avatar src={selectedBrand.logoUrl} size="sm" radius="xl">
+            {selectedBrand.name?.charAt(0)?.toUpperCase()}
+          </Avatar>
+          <Text size="sm">{selectedBrand.name}</Text>
+        </Group>
+      </Box>
 
-            <Box>
-              <Group justify="space-between" mb="xs">
-                <Text size="sm" fw={500}>Embed Code:</Text>
-                <CopyButton value={generateEmbedCode(selectedBrand._id)} timeout={2000}>
-                  {({ copied, copy }) => (
-                    <Button
-                      size="xs"
-                      variant="light"
-                      color={copied ? 'teal' : 'blue'}
-                      leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
-                      onClick={copy}
-                    >
-                      {copied ? 'Copied!' : 'Copy Code'}
-                    </Button>
-                  )}
-                </CopyButton>
-              </Group>
+      {/* Existing Shopify Embed Code Section */}
+      <Box>
+        <Group justify="space-between" mb="xs">
+          <Text size="sm" fw={500}>Product Page Widget:</Text>
+          <CopyButton value={generateEmbedCode(selectedBrand._id)} timeout={2000}>
+            {({ copied, copy }) => (
+              <Button
+                size="xs"
+                variant="light"
+                color={copied ? 'teal' : 'blue'}
+                leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                onClick={copy}
+              >
+                {copied ? 'Copied!' : 'Copy Code'}
+              </Button>
+            )}
+          </CopyButton>
+        </Group>
 
-              <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
-                {generateEmbedCode(selectedBrand._id)}
-              </Code>
-            </Box>
+        <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
+          {generateEmbedCode(selectedBrand._id)}
+        </Code>
+      </Box>
 
-            <Box>
-              <Text size="sm" fw={500} mb="xs">Brand ID:</Text>
-              <Group gap="xs">
-                <Code>{selectedBrand._id}</Code>
-                <CopyButton value={selectedBrand._id} timeout={2000}>
-                  {({ copied, copy }) => (
-                    <ActionIcon
-                      size="sm"
-                      variant="subtle"
-                      color={copied ? 'teal' : 'gray'}
-                      onClick={copy}
-                    >
-                      {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
-                    </ActionIcon>
-                  )}
-                </CopyButton>
-              </Group>
-            </Box>
+      {/* ✅ NEW: Product Page Widget Section */}
+      <Box mt="md" pt="md" style={{ borderTop: '1px solid #eee' }}>
+        <Group justify="space-between" mb="xs">
+          <Text size="sm" fw={600}>Review Page Widget</Text>
+          <CopyButton
+            value={`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>\n<script src="https://revtrust-front.onrender.com/review-page-widget.js" defer></script>`}
+            timeout={2000}
+          >
+            {({ copied, copy }) => (
+              <Button
+                size="xs"
+                variant="light"
+                color={copied ? 'teal' : 'blue'}
+                leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                onClick={copy}
+              >
+                {copied ? 'Copied!' : 'Copy Code'}
+              </Button>
+            )}
+          </CopyButton>
+        </Group>
 
-            <Box>
-              <Text size="sm" c="dimmed">
-                <strong>Instructions:</strong>
-                <ol style={{ marginTop: '8px', paddingLeft: '20px' }}>
-                  <li>Copy the embed code above</li>
-                  <li>Go to your Shopify product page template</li>
-                  <li>Paste this code where you want the review widget to appear</li>
-                  <li>Save and publish your changes</li>
-                </ol>
-              </Text>
-            </Box>
-          </Stack>
-        )}
-      </Modal>
+        <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
+{`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>
+<script src="https://revtrust-front.onrender.com/review-page-widget.js" defer></script>`}
+        </Code>
+      </Box>
+
+      <Box>
+        <Text size="sm" fw={500} mb="xs">Brand ID:</Text>
+        <Group gap="xs">
+          <Code>{selectedBrand._id}</Code>
+          <CopyButton value={selectedBrand._id} timeout={2000}>
+            {({ copied, copy }) => (
+              <ActionIcon
+                size="sm"
+                variant="subtle"
+                color={copied ? 'teal' : 'gray'}
+                onClick={copy}
+              >
+                {copied ? <IconCheck size={14} /> : <IconCopy size={14} />}
+              </ActionIcon>
+            )}
+          </CopyButton>
+        </Group>
+      </Box>
+
+      <Box>
+        <Text size="sm" c="dimmed">
+          <strong>Instructions:</strong>
+          <ol style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>Copy either embed code above</li>
+            <li>Paste it into your Shopify or product page where you want the review widget to appear</li>
+            <li>Ensure the <code>data-brandid</code> matches your brand’s ID</li>
+            <li>Save and publish your changes</li>
+          </ol>
+        </Text>
+      </Box>
+    </Stack>
+  )}
+</Modal>
+
     </>
   );
 }
