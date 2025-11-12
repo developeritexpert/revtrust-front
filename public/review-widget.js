@@ -60,6 +60,50 @@
 		return data?.data || [];
 	}
 
+  async function fetchReviewsTotal({ brandId, productId }) {
+    try {
+      const baseURL = "https://revtrust-front.onrender.com";
+      let url = new URL("/review-widget", baseURL);
+
+      // Add query parameters safely
+      if (productId) {
+        url.searchParams.set("shopifyProductId", productId);
+      }
+
+      // Example for brandId as well
+      if (brandId) {
+        url.searchParams.set("brandId", brandId);
+      }
+
+      const res = await fetch(url.toString(), {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) throw new Error("Failed to fetch total reviews");
+      const data = await res.json();
+      let totalReviews = 0;
+      // Make sure the response structure is valid
+      if (data?.data?.data) {
+        totalReviews = data.data.data.length;
+      }
+
+      // Only set if parentContainer exists and totalReviews is a valid number
+      if (Number.isFinite(totalReviews)) {
+        return totalReviews;
+      }else{
+        return totalReviews;
+      }
+
+    }catch (error) {
+      console.error("Error fetching total reviews:", error);
+      return 0;
+    }
+  }
+
 	function generateDynamicRatingBlock(reviews, totalreviews) {
 		if (!reviews || reviews.length === 0) return `<div class="rating-header"><div class="noReviews"><p>No reviews yet.</p></div>`;
 
@@ -119,10 +163,25 @@
 	}
 
 
-   async function initContainer(container) {
+  async function initContainer(container) {
     const brandId = container.getAttribute("data-brandid");
     const productId = container.getAttribute("data-product-id");
     if (!brandId) return;
+
+    let totalReviewsCount = 0;
+
+    if (container) {
+      const brandId = container.dataset.brandid;
+      const productId = container.dataset.productId;
+
+      if (brandId) { // Make sure brandId exists
+        if (productId) {
+          totalReviewsCount = await fetchReviewsTotal({ brandId, productId });
+        } else {
+          totalReviewsCount = await fetchReviewsTotal({ brandId });
+        }
+      }
+    }
 
     container.innerHTML = `
       <div class="revs-review-widget">
@@ -202,7 +261,7 @@
     const pageSize = 5;
     let totalReviewsLoaded = 0;
 
-    async function renderReviews(reset=false) {
+    async function renderReviews(reset = false) {
       if (reset) {
         currentPage = 1;
         reviewsList.innerHTML = "";
@@ -231,11 +290,14 @@
       reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
       totalReviewsLoaded += reviews.length;
 
-      // Check if more pages exist
-      loadMoreBtn.style.display = reviews.length === pageSize ? "block" : "none";
+      // Show Load More only if there are more reviews
+      loadMoreBtn.style.display = totalReviewsLoaded < totalReviewsCount ? "block" : "none";
+
       initMasonry(reviewsList);
-      reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded>1?'s':''}`;
-      reviewsCard.innerHTML = `${generateDynamicRatingBlock(reviews, totalReviewsLoaded)}`;
+      reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded > 1 ? 's' : ''}`;
+      reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+
+      document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
     }
 
     loadMoreBtn.addEventListener("click", () => {
