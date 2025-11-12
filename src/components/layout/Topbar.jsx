@@ -47,12 +47,12 @@ export default function Topbar({ burger, onToggleCollapse, collapsed }) {
         </Group>
 
         <Group gap="xs">
-          <TextInput
+          {/* <TextInput
             placeholder="Search..."
             leftSection={<IconSearch size={16} />}
             style={{ width: 300 }}
             visibleFrom="sm"
-          />
+          /> */}
 
           <ActionIcon
             variant="default"
@@ -62,11 +62,11 @@ export default function Topbar({ burger, onToggleCollapse, collapsed }) {
             {colorScheme === 'dark' ? <IconSun size={18} /> : <IconMoon size={18} />}
           </ActionIcon>
 
-          <Indicator inline processing color="red" offset={7}>
+          {/* <Indicator inline processing color="red" offset={7}>
             <ActionIcon variant="default" size="lg">
               <IconBell size={18} />
             </ActionIcon>
-          </Indicator>
+          </Indicator> */}
 
           <Menu shadow="md" width={220} position="bottom-end">
             <Menu.Target>

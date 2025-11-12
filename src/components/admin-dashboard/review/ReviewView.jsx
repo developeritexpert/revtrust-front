@@ -40,6 +40,7 @@ export default function ReviewsPage() {
   // determine which type of review to show based on route
   const isPendingPage = pathname.includes('/pending');
   const isApprovedPage = pathname.includes('/approved');
+  
 
 const fetchReviews = useCallback(async (params) => {
   const token = useAuthStore.getState().token;
