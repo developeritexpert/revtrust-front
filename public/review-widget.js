@@ -291,8 +291,12 @@
 
       initMasonry(reviewsList);
       reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded > 1 ? 's' : ''}`;
-      reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
-
+      // reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+      if(reviews.length > 0){
+        reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+      }else{
+        reviewsCard.innerHTML = '';
+      }
       document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
     }
 
