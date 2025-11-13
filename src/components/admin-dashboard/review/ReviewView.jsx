@@ -50,7 +50,17 @@ const fetchReviews = useCallback(async (params) => {
   else if (isApprovedPage) query.append('status', 'ACTIVE');
 
   if (brandId) query.append('brandId', brandId);
-  if (type) query.append('type', type); // 👈 brand or product
+
+  // ✅ Only append `type` if not filtered by reviewType
+// ✅ Only send type filter if explicitly selected
+    if (params.reviewType === 'Product') {
+      query.append('type', 'product');
+    } else if (params.reviewType === 'Brand') {
+      query.append('type', 'brand');
+    }
+// 👉 else (All Types) – don't append anything, show all reviews
+
+
 
   const response = await axiosWrapper(
     'get',
@@ -61,6 +71,7 @@ const fetchReviews = useCallback(async (params) => {
 
   return response.data;
 }, [isPendingPage, isApprovedPage, brandId, type]);
+
 
 
 
