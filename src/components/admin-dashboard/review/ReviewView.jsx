@@ -1,7 +1,7 @@
 // components/admin-dashboard/review/ReviewsPage.jsx
 'use client';
 
-import { useCallback,useRef } from 'react';
+import { useCallback,useRef ,useState} from 'react';
 import { useRouter,usePathname } from 'next/navigation';
 import { Avatar, Text, Group, Badge, Rating, Stack, Box } from '@mantine/core';
 import { 
@@ -40,7 +40,9 @@ export default function ReviewsPage() {
   // determine which type of review to show based on route
   const isPendingPage = pathname.includes('/pending');
   const isApprovedPage = pathname.includes('/approved');
-  
+
+  const [updatingReviewIds, setUpdatingReviewIds] = useState([]);
+
 
 const fetchReviews = useCallback(async (params) => {
   const token = useAuthStore.getState().token;
@@ -134,24 +136,22 @@ const fetchReviews = useCallback(async (params) => {
     try {
       const token = useAuthStore.getState().token;
       const URL = REVIEW_API.STATUS_REVIEW.replace(':id', review._id);
-      
-      await axiosWrapper(
-        'put',
-        URL,
-        { status: newStatus },
-        token
-      );
-      
+
+      // Show loader for this review
+      setUpdatingReviewIds(prev => [...prev, review._id]);
+
+      await axiosWrapper('put', URL, { status: newStatus }, token);
+
       notifications.show({
         title: 'Success',
         message: `Review ${newStatus.toLowerCase()} successfully`,
         color: 'green',
       });
-      
-      // Refresh the table
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
+
+      // Update the review in the table without full reload
+      if (tableRef.current?.refresh) {
+        tableRef.current.refresh(); // This will re-fetch table data
+      }
       
     } catch (err) {
       notifications.show({
@@ -159,8 +159,11 @@ const fetchReviews = useCallback(async (params) => {
         message: err.response?.data?.message || 'Failed to update review status',
         color: 'red',
       });
+    } finally {
+      setUpdatingReviewIds(prev => prev.filter(id => id !== review._id));
     }
   };
+
 
   const columns = [
     {
