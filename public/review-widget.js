@@ -285,6 +285,7 @@
       reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
       totalReviewsLoaded += reviews.length;
 
+      
       // Show Load More only if there are more reviews
       loadMoreBtn.style.display = totalReviewsLoaded < totalReviewsCount ? "block" : "none";
 
