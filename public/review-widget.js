@@ -177,8 +177,7 @@
       }
     }
 
-    console.log(totalReviewsCount);
-
+ 
     container.innerHTML = `
       <div class="revs-review-widget">
         <div class="revs-reviews-header">
@@ -240,9 +239,9 @@
             </ul>
           </div>
         </div>
-        <div class="revs-dropdown-reviews-summary">
+        ${(totalReviewsCount > 0) ? `<div class="revs-dropdown-reviews-summary">
           <div class="revs-dropdown-review-card"><div class="rating-header"> <div class="rating-overview"> <p class="out-pera revshimmer">5 out of 5 stars — Rated</p></div></div><div class="rating-bars"><div class="bar"><span class="label revshimmer">Excellent</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Very Good</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Average</span><div class="progress"><div class="fill revshimmer" style="width:33.3%"></div></div><span class="count revshimmer">1</span></div><div class="bar"><span class="label revshimmer">Poor</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div> <span class="count revshimmer">0</span></div><div class="bar"><span class="label revshimmer">Terrible</span><div class="progress"><div class="fill revshimmer" style="width:0.0%"></div></div><span class="count revshimmer">0</span></div></div></div>
-        </div>
+        </div>` : `<div class="revs-dropdown-reviews-summary"></div>` }
         <div class="revs-reviews-list"></div>
         <div class="revs-loadMoreWrap"><button class="revs-load-more-btn" style="display:none;">Load More Reviews</button></div>
       </div>`;
@@ -291,11 +290,8 @@
 
       initMasonry(reviewsList);
       reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded > 1 ? 's' : ''}`;
-      // reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
-      if(reviews.length > 0){
+      if(reviewsCard){
         reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
-      }else{
-        reviewsCard.innerHTML = '';
       }
       document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
     }
