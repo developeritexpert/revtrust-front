@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let totalRatingSum = 0, totalRatingCount = 0;
 
       reviews.forEach(review => {
-        if(review.status == 'ACTIVE'){
+        if(review.reviewStatus == 'ACTIVE'){
           const ratings = [
             review.product_store_rating,
             review.seller_rating,
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const res = await fetch(url.toString());
           if (!res.ok) throw new Error("Failed to fetch reviews");
           const data = await res.json();
-          return data || [];
+          return data?.data || [];
       } catch (err) {
           console.error("Error fetching reviews:", err);
           return [];
@@ -198,15 +198,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
         let totalReviews = 0;
         // Make sure the response structure is valid
-        if (data) {
-          totalReviews = data.length;
+        if (data?.data) {
+          totalReviews = data.data.length;
         }
 
         // Only set if parentContainer exists and totalReviews is a valid number
         if (Number.isFinite(totalReviews)) {
-          return data;
+          return data.data;
         }else{
-          return data;
+          return data.data;
         }
 
       }catch (error) {
@@ -588,4 +588,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     `;
     document.head.appendChild(style);
+
 });

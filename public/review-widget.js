@@ -81,8 +81,8 @@
       const data = await res.json();
       let totalReviews = 0;
       // Make sure the response structure is valid
-      if (data) {
-        totalReviews = data.length;
+      if (data?.data) {
+        totalReviews = data.data.length;
       }
 
       // Only set if parentContainer exists and totalReviews is a valid number
@@ -105,7 +105,7 @@
 		let totalRatingSum = 0, totalRatingCount = 0;
 
 		reviews.forEach(review => {
-      if(review.status == 'ACTIVE'){
+      if(review.reviewStatus == 'ACTIVE'){
         const ratings = [
           review.product_store_rating,
           review.seller_rating,
