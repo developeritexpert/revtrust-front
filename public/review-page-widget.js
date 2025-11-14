@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const res = await fetch(url.toString());
           if (!res.ok) throw new Error("Failed to fetch reviews");
           const data = await res.json();
-          return data?.data || [];
+          return data || [];
       } catch (err) {
           console.error("Error fetching reviews:", err);
           return [];
@@ -198,15 +198,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const data = await res.json();
         let totalReviews = 0;
         // Make sure the response structure is valid
-        if (data?.data) {
-          totalReviews = data.data.length;
+        if (data) {
+          totalReviews = data.length;
         }
 
         // Only set if parentContainer exists and totalReviews is a valid number
         if (Number.isFinite(totalReviews)) {
-          return data.data;
+          return data;
         }else{
-          return data.data;
+          return data;
         }
 
       }catch (error) {
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="revsreviewPage__ReviewDate revshimmer">${date}</div>
           <div class="revsreviewPage__stars revshimmer">${starsHTML(rating)}</div>
           <div class="revsreviewPage_reviewTitle"><h3 class="revshimmer">${r.reviewTitle}</h3></div>
-          <div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewBody || ""}</p></div>
+          <div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewContent || ""}</p></div>
         </div>
       `;
     }
