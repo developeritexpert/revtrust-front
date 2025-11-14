@@ -24,7 +24,7 @@
 			<div class="revReviewDate">${date}</div>
 			<div class="revs-rating-stars">${starsHTML(rating)}</div>
 			<div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div>
-			<div class="review-body">${r.reviewBody || ""}</div>
+			<div class="review-body">${r.reviewContent || ""}</div>
 		  </div>`;
 	}
 
@@ -81,8 +81,8 @@
       const data = await res.json();
       let totalReviews = 0;
       // Make sure the response structure is valid
-      if (data?.data) {
-        totalReviews = data.data.length;
+      if (data) {
+        totalReviews = data.length;
       }
 
       // Only set if parentContainer exists and totalReviews is a valid number
