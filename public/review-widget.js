@@ -325,27 +325,39 @@
 	if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAll);
 	else initAll();
 
-	document.querySelectorAll('.revs-reviewsFilterWrap button#revs-rating-menu-filter').forEach(button => {
-		const header = button.closest('.revs-reviews-header');
-		const filterOptions = header.querySelector('.revs-filter-options');
+	// Keep a reference to currently open dropdown (if any)
+  let openDropdown = null;
 
-		// Toggle on button click
-		button.addEventListener('click', (e) => {
-		  e.stopPropagation(); // prevent triggering document click
-		  const isVisible = filterOptions.style.display === 'block';
-		  // Hide all open dropdowns first
-		  document.querySelectorAll('.revs-filter-options').forEach(opt => opt.style.display = 'none');
-		  // Then toggle the clicked one
-		  filterOptions.style.display = isVisible ? 'none' : 'block';
-		});
+  // Delegate click for toggle buttons
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('#revs-rating-menu-filter'); // ID selector here
+    if (btn) {
+      e.stopPropagation();
 
-		// Close dropdown when clicking outside
-		document.addEventListener('click', (e) => {
-		  if (!filterOptions.contains(e.target) && !button.contains(e.target)) {
-			filterOptions.style.display = 'none';
-		  }
-		});
-	});
+      const header = btn.closest('.revs-reviews-header');
+      if (!header) return;
+      const dropdown = header.querySelector('.revs-filter-options');
+      if (!dropdown) return;
+
+      // Close other dropdowns
+      document.querySelectorAll('.revs-filter-options').forEach(d => {
+        if (d !== dropdown) d.style.display = 'none';
+      });
+
+      // Toggle this dropdown
+      const isVisible = dropdown.style.display === 'block';
+      dropdown.style.display = isVisible ? 'none' : 'block';
+      openDropdown = isVisible ? null : dropdown;
+      return;
+    }
+
+    // Close dropdown if clicking outside
+    const clickedInsideDropdown = e.target.closest('.revs-filter-options');
+    if (!clickedInsideDropdown) {
+      document.querySelectorAll('.revs-filter-options').forEach(d => d.style.display = 'none');
+      openDropdown = null;
+    }
+  });
 
 	setTimeout(function(){
 		document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
