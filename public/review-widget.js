@@ -105,21 +105,23 @@
 		let totalRatingSum = 0, totalRatingCount = 0;
 
 		reviews.forEach(review => {
-		  const ratings = [
-			review.product_store_rating,
-			review.seller_rating,
-			review.product_quality_rating,
-			review.product_price_rating,
-			review.issue_handling_rating
-		  ].filter(r => typeof r === 'number' && r > 0);
+      if(review.status == 'ACTIVE'){
+        const ratings = [
+          review.product_store_rating,
+          review.seller_rating,
+          review.product_quality_rating,
+          review.product_price_rating,
+          review.issue_handling_rating
+        ].filter(r => typeof r === 'number' && r > 0);
 
-		  const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
-		  if (reviewAverage > 0) {
-			const rounded = Math.round(reviewAverage);
-			if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
-			totalRatingSum += reviewAverage;
-			totalRatingCount++;
-		  }
+        const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
+        if (reviewAverage > 0) {
+        const rounded = Math.round(reviewAverage);
+        if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
+          totalRatingSum += reviewAverage;
+          totalRatingCount++;
+        }
+      }
 		});
 
 		const totalReviews = totalreviews;
