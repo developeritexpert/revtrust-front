@@ -8,143 +8,143 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-    const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
-    const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
+  const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
+  const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
 
-    const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
+  const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
 
-    function generateDynamicRatingBlock(reviews, totalreviews) {
-      if (!reviews || reviews.length === 0) return `<div class="revsreviewPage__summaryBars"><div class="noReviews"><p>No reviews yet.</p></div>`;
+  function generateDynamicRatingBlock(reviews, totalreviews) {
+    if (!reviews || reviews.length === 0) return `<div class="revsreviewPage__summaryBars"><div class="noReviews"><p>No reviews yet.</p></div>`;
 
-      const ratingCounts = {5:0,4:0,3:0,2:0,1:0};
-      let totalRatingSum = 0, totalRatingCount = 0;
+    const ratingCounts = {5:0,4:0,3:0,2:0,1:0};
+    let totalRatingSum = 0, totalRatingCount = 0;
 
-      reviews.forEach(review => {
-        if(review.reviewStatus == 'ACTIVE'){
-          const ratings = [
-            review.product_store_rating,
-            review.seller_rating,
-            review.product_quality_rating,
-            review.product_price_rating,
-            review.issue_handling_rating
-          ].filter(r => typeof r === 'number' && r > 0);
+    reviews.forEach(review => {
+      if(review.reviewStatus == 'ACTIVE'){
+        const ratings = [
+          review.product_store_rating,
+          review.seller_rating,
+          review.product_quality_rating,
+          review.product_price_rating,
+          review.issue_handling_rating
+        ].filter(r => typeof r === 'number' && r > 0);
 
-          const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
-          if (reviewAverage > 0) {
-            const rounded = Math.round(reviewAverage);
-            if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
-            totalRatingSum += reviewAverage;
-            totalRatingCount++;
-          }
+        const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
+        if (reviewAverage > 0) {
+          const rounded = Math.round(reviewAverage);
+          if (rounded >=1 && rounded <=5) ratingCounts[rounded]++;
+          totalRatingSum += reviewAverage;
+          totalRatingCount++;
         }
-      });
-
-      const totalReviews = totalreviews;
-      const overallRating = totalRatingCount ? totalRatingSum/totalRatingCount : 0;
-      const roundedOverall = overallRating.toFixed(1);
-
-      const reviewRatingWrapper = document.querySelector('.revsreviewPage__summaryLeft');
-
-      if(roundedOverall){
-          reviewRatingWrapper.innerHTML = `<div class="revsreviewPage__ratingScore">
-              <span class="revsreviewPage__stars">${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}</span>
-              <span class="revsreviewPage__score">${roundedOverall} out of 5</span>
-          </div>
-          <p>Based on ${reviews.length} reviews</p>`;
       }
+    });
 
-      const filledStar = STAR_YELLOW;
-      const emptyStar = STAR_GRAY; // optional for empty stars
+    const totalReviews = totalreviews;
+    const overallRating = totalRatingCount ? totalRatingSum/totalRatingCount : 0;
+    const roundedOverall = overallRating.toFixed(1);
 
-      // Function to generate star visuals
-      const stars = (rating) => {
-      const full = Math.min(Math.max(Number(rating), 0), 5); // clamp between 0–5
-      return `
-          <span class="revsStar">
-          ${filledStar.repeat(full)}${emptyStar.repeat(5 - full)}
-          </span>
-      `;
-      };
+    const reviewRatingWrapper = document.querySelector('.revsreviewPage__summaryLeft');
 
-      let ratingBarsHTML = '';
-      for (let i = 5; i >= 1; i--) {
-      const count = ratingCounts[i] || 0; // safely handle missing keys
-      const percent = totalReviews ? ((count / totalReviews) * 100).toFixed(1) : 0;
-
-      ratingBarsHTML += `
-          <div class="revsreviewPage__bar">
-          ${stars(i)}
-          <div class="revsreviewPage__progress">
-              <div class="fill" style="width:${percent}%"></div>
-          </div>
-          <span class="revsreviewPage__count">${count}</span>
-          </div>
-      `;
-      }
-
-      return `
-          <div class="revsreviewPage__summaryBars">${ratingBarsHTML}</div>
-      `;
+    if(roundedOverall){
+        reviewRatingWrapper.innerHTML = `<div class="revsreviewPage__ratingScore">
+            <span class="revsreviewPage__stars">${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}${STAR_YELLOW}</span>
+            <span class="revsreviewPage__score">${roundedOverall} out of 5</span>
+        </div>
+        <p>Based on ${reviews.length} reviews</p>`;
     }
 
-    // Inject base widget structure dynamically
-    container.innerHTML = `
-      <div class="revsreviewPage__container">
-          <div class="revsreviewPage__summary">
-              <div class="revsreviewPage__summaryLeft">
-                  <div class="revsreviewPage__ratingScore">
-                      <span class="revsreviewPage__stars">${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}</span>
-                      <span class="revsreviewPage__score revshimmer">0 out of 5</span>
-                  </div>
-                  <p class="revshimmer">Based on 0 reviews</p>
-              </div>
+    const filledStar = STAR_YELLOW;
+    const emptyStar = STAR_GRAY; // optional for empty stars
 
-              <div class="reviewPage__summaryContainer">
-                  <div class="revsreviewPage__bar">
-                      <span class="revsStar">${STAR_GRAY}</span>
-                      <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
-                  </div>
-                  <div class="revsreviewPage__bar">
-                      <span class="revsStar">${STAR_GRAY}</span>
-                      <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
-                  </div>
-                  <div class="revsreviewPage__bar">
-                      <span class="revsStar">${STAR_GRAY}</span>
-                      <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
-                  </div>
-                  <div class="revsreviewPage__bar">
-                      <span class="revsStar">${STAR_GRAY}</span>
-                      <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
-                  </div>
-                  <div class="revsreviewPage__bar">
-                      <span class="revsStar">${STAR_GRAY}</span>
-                      <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
-                  </div>
-              </div>
+    // Function to generate star visuals
+    const stars = (rating) => {
+    const full = Math.min(Math.max(Number(rating), 0), 5); // clamp between 0–5
+    return `
+        <span class="revsStar">
+        ${filledStar.repeat(full)}${emptyStar.repeat(5 - full)}
+        </span>
+    `;
+    };
 
-              <div class="reviewPage__actions">
-                  <div class="reviewPage__actionsRight">
-                      <div class="reviewPage__sortWrapper">
-                          <label for="reviewPageSort" class="reviewPage__sortLabel revshimmer">Sort by:</label>
-                          <div class="reviewPage__dropdownWrapper">
-                              <select id="reviewPageSort" class="reviewPage__sortDropdown revshimmer" aria-label="Sort dropdown">
-                                  <option value="newest">Newest</option>
-                                  <option value="oldest">Oldest</option>
-                                  <option value="popular">Most Popular</option>
-                                  <option value="rating_highest">Highest Rated</option>
-                                  <option value="rating_lowest">Lowest Rated</option>
-                              </select>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-          </div>
-          <div class="revsreviewPage__cards"></div>
-          <div class="revs-loadMoreWrap">
-            <div class="revsReviewPage__Loader"><span class="revTLoader"></span></div>
-            <button class="revs-load-more-btn" style="display:none;">Load More Reviews</button>
-          </div>
-      </div>`;
+    let ratingBarsHTML = '';
+    for (let i = 5; i >= 1; i--) {
+    const count = ratingCounts[i] || 0; // safely handle missing keys
+    const percent = totalReviews ? ((count / totalReviews) * 100).toFixed(1) : 0;
+
+    ratingBarsHTML += `
+        <div class="revsreviewPage__bar">
+        ${stars(i)}
+        <div class="revsreviewPage__progress">
+            <div class="fill" style="width:${percent}%"></div>
+        </div>
+        <span class="revsreviewPage__count">${count}</span>
+        </div>
+    `;
+    }
+
+    return `
+        <div class="revsreviewPage__summaryBars">${ratingBarsHTML}</div>
+    `;
+  }
+
+  // Inject base widget structure dynamically
+  container.innerHTML = `
+    <div class="revsreviewPage__container">
+        <div class="revsreviewPage__summary">
+            <div class="revsreviewPage__summaryLeft">
+                <div class="revsreviewPage__ratingScore">
+                    <span class="revsreviewPage__stars">${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}${STAR_GRAY}</span>
+                    <span class="revsreviewPage__score revshimmer">0 out of 5</span>
+                </div>
+                <p class="revshimmer">Based on 0 reviews</p>
+            </div>
+
+            <div class="reviewPage__summaryContainer">
+                <div class="revsreviewPage__bar">
+                    <span class="revsStar">${STAR_GRAY}</span>
+                    <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
+                </div>
+                <div class="revsreviewPage__bar">
+                    <span class="revsStar">${STAR_GRAY}</span>
+                    <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
+                </div>
+                <div class="revsreviewPage__bar">
+                    <span class="revsStar">${STAR_GRAY}</span>
+                    <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
+                </div>
+                <div class="revsreviewPage__bar">
+                    <span class="revsStar">${STAR_GRAY}</span>
+                    <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
+                </div>
+                <div class="revsreviewPage__bar">
+                    <span class="revsStar">${STAR_GRAY}</span>
+                    <div class="revsreviewPage__progress"><div class="fill revshimmer" style="width:80%"></div></div>
+                </div>
+            </div>
+
+            <div class="reviewPage__actions">
+                <div class="reviewPage__actionsRight">
+                    <div class="reviewPage__sortWrapper">
+                        <label for="reviewPageSort" class="reviewPage__sortLabel revshimmer">Sort by:</label>
+                        <div class="reviewPage__dropdownWrapper">
+                            <select id="reviewPageSort" class="reviewPage__sortDropdown revshimmer" aria-label="Sort dropdown">
+                                <option value="newest">Newest</option>
+                                <option value="oldest">Oldest</option>
+                                <option value="popular">Most Popular</option>
+                                <option value="rating_highest">Highest Rated</option>
+                                <option value="rating_lowest">Lowest Rated</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="revsreviewPage__cards"></div>
+        <div class="revs-loadMoreWrap">
+          <div class="revsReviewPage__Loader"><span class="revTLoader"></span></div>
+          <button class="revs-load-more-btn" style="display:none;">Load More Reviews</button>
+        </div>
+    </div>`;
 
     const reviewsList = container.querySelector(".revsreviewPage__cards");
     const reviewCountEl = container.querySelector(".revs-review-count");
@@ -416,6 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     .reviewPage__actionsRight .reviewPage__dropdownWrapper select {
       padding: 10px 20px;
+      width:100%;
       font-size: 14px;
       background: transparent;
       cursor: pointer;
@@ -586,7 +587,32 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 0;
       }
     }
-    `;
+    @media only screen and (max-width: 767px) {
+      .revsreviewPage__summaryLeft {
+        flex: 0 0 100%;
+        max-width: 100%;
+      } 
+      .reviewPage__summaryContainer {
+        flex: 0 0 60%;
+        max-width: 60%;
+      }
+      .reviewPage__actions {
+        flex: 0 0 35%;
+        max-width: 35%;
+      }
+    }
+    @media only screen and (max-width: 480px) {
+      .reviewPage__actions {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-top: 10px;
+      }
+      .reviewPage__summaryContainer {
+        flex: 0 0 100%;
+        max-width: 100%;
+      }
+    }
+    `;  
     document.head.appendChild(style);
 
 });
