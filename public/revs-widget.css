@@ -426,8 +426,18 @@
 .revs-review-widget .revs-reviews-list .revsReviewItem .revReviewTitle h3 {
     font-size: 16px;
     margin-bottom: 5px;
-            }
-
+}
+.revsStarRatingWidget .revs-badge {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.revsStarRatingWidget .revs-badge .revs-badge__stars {
+    line-height: 10px;
+}
+.revsStarRatingWidget .revs-badge .revs-badge .revs-review__text {
+    line-height: 0;
+}
 @keyframes revanimloader {
     0% {
         transform: scale(0);

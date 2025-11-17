@@ -624,17 +624,21 @@
             const avRating = parseFloat(calculateOverallRating(reviews));
             const tlReviews = reviews.length;
 
+            let reviewTextHTML = '';
+
+            if (badgeType === 'rating_with_review') {
+                reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span><span class="revs-review__text">${tlReviews} Review${tlReviews > 1 ? 's' : ''}</span>`;
+            } else if (badgeType === 'review_only') {
+                reviewTextHTML = `<span class="revs-review__text">${tlReviews} Reviews</span>`;
+            } else if (badgeType === 'rating_only') {
+                reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span>`;
+            } else if (badgeType === 'rating_with_avgrating') {
+                reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span><span class="revs-review__text"> ${avRating}</span>`;
+            }
+
             el.innerHTML = `
                 <div class="revs-badge">
-                    <span class="revs-badge__stars">
-                        ${flexibleStarsHTML(avRating)}
-                    </span>
-
-                    ${
-                        badgeType === 'review_rating'
-                        ? `<span class="revs-review__text">${tlReviews} Review${tlReviews > 1 ? 's' : ''}</span>`
-                        : ``
-                    }
+                    ${reviewTextHTML}
                 </div>`;
         }
 
