@@ -153,7 +153,7 @@ export default function BrandsPage() {
     data-price="{{ product.price }}" 
     data-product-image="{{ product.selected_or_first_available_variant.featured_image | img_url: 'master' }}">
   </div>
-  <script src="https://revtrust-front.onrender.com/review-widget.js" defer></script>`;
+  <script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`;
   };
 
     // ✅ Open review type modal
@@ -466,7 +466,7 @@ export default function BrandsPage() {
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={600}>Review Page Widget</Text>
           <CopyButton
-            value={`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>\n<script src="https://revtrust-front.onrender.com/review-page-widget.js" defer></script>`}
+            value={`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>\n<script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
             timeout={2000}
           >
             {({ copied, copy }) => (
@@ -485,7 +485,7 @@ export default function BrandsPage() {
 
         <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
 {`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>
-<script src="https://revtrust-front.onrender.com/review-page-widget.js" defer></script>`}
+<script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
         </Code>
       </Box>
 
