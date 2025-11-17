@@ -587,7 +587,7 @@ document.addEventListener("DOMContentLoaded", () => {
         opacity: 0;
       }
     }
-    @media only screen and (max-width: 767px) {
+    @media only screen and (max-width: 991px) {
       .revsreviewPage__summaryLeft {
         flex: 0 0 100%;
         max-width: 100%;
