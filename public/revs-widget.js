@@ -4,8 +4,9 @@
 
 	const STAR_YELLOW = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#FFBF00" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
 	const STAR_GRAY = `<svg width="20" height="18" viewBox="0 0 27 26"><path fill="#D9D9D9" d="M13.2 0l3.12 9.59h10.08l-8.16 5.93 3.12 9.59-8.16-5.93-8.16 5.93 3.12-9.59L0 9.59h10.08L13.2 0z"/></svg>`;
-
+    
 	const starsHTML = (n) => STAR_YELLOW.repeat(n) + STAR_GRAY.repeat(5 - n);
+
 
     // Pure JS check instead of jQuery: $('#revsBrandReviewWidget').length > 0
     const isBrandWidget = document.querySelector('#revsBrandReviewWidget') !== null;
@@ -14,41 +15,10 @@
 		const rating = Math.round(Number(r.product_store_rating) || 0);
 		const date = new Date(r.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
         if(isBrandWidget){
-            return `
-                <div class="revsreviewPage__card">
-                    <div class="revsreviewPage__reviewer"><span class="revshimmer">${r.name || "Anonymous"}</span> 
-                    <span class="revshimmer"><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                    <style>
-                        .s0 { fill: #000000 } 
-                    </style>
-                    <g>
-                        <path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
-                    </g>
-                    </svg></span></div>
-                    <div class="revsreviewPage__ReviewDate revshimmer">${date}</div>
-                    <div class="revsreviewPage__stars revshimmer">${starsHTML(rating)}</div>
-                    <div class="revsreviewPage_reviewTitle"><h3 class="revshimmer">${r.reviewTitle}</h3></div>
-                    <div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewContent || ""}</p></div>
-                </div>`;
+            return `<div class="revsreviewPage__card"><div class="revsreviewPage__reviewer"><span class="revshimmer">${r.name || "Anonymous"}</span><span class="revshimmer"><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0 { fill: #000000 }</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revsreviewPage__ReviewDate revshimmer">${date}</div><div class="revsreviewPage__stars revshimmer">${starsHTML(rating)}</div><div class="revsreviewPage_reviewTitle"><h3 class="revshimmer">${r.reviewTitle}</h3></div><div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewContent || ""}</p></div></div>`;
         }else{
-            return `
-                <div class="revsReviewItem">
-                    <div class="reviewer"><span>${r.name || "Anonymous"}</span> 
-                    <span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20">
-                        <style>
-                        .s0 { fill: #000000 } 
-                        </style>
-                        <g>
-                        <path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/>
-                        </g>
-                    </svg></span></div>
-                    <div class="revReviewDate">${date}</div>
-                    <div class="revs-rating-stars">${starsHTML(rating)}</div>
-                    <div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div>
-                    <div class="review-body">${r.reviewContent || ""}</div>
-                </div>`;
+            return `<div class="revsReviewItem"><div class="reviewer"><span>${r.name || "Anonymous"}</span><span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0{fill:#000000}</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revReviewDate">${date}</div><div class="revs-rating-stars">${starsHTML(rating)}</div><div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div><div class="review-body">${r.reviewContent || ""}</div></div>`;
         }
-		
 	}
 
 	async function initMasonry(list) {
@@ -587,507 +557,95 @@
         }
     });
 
+
+    function calculateOverallRating(reviews) {
+        if (!reviews || reviews.length === 0) return 0;
+
+        let ratingCounts = {5:0,4:0,3:0,2:0,1:0};
+        let totalRatingSum = 0, totalRatingCount = 0;
+
+        reviews.forEach(review => {
+            if (review.reviewStatus === 'ACTIVE') {
+                const ratings = [
+                    review.product_store_rating,
+                    review.seller_rating,
+                    review.product_quality_rating,
+                    review.product_price_rating,
+                    review.issue_handling_rating
+                ].filter(r => typeof r === 'number' && r > 0);
+
+                const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
+                if (reviewAverage > 0) {
+                    const rounded = Math.round(reviewAverage);
+                    if (rounded >= 1 && rounded <= 5) ratingCounts[rounded]++;
+                    totalRatingSum += reviewAverage;
+                    totalRatingCount++;
+                }
+            }
+        });
+
+        const overallRating = totalRatingCount ? totalRatingSum / totalRatingCount : 0;
+        const roundedOverall = overallRating.toFixed(1);
+        return Number(roundedOverall); // returns as number
+    }
+
+    // Generate flexible star fill HTML
+    function flexibleStarsHTML(rating) {
+        let html = "";
+
+        for (let i = 0; i < 5; i++) {
+            const percent = Math.min(100, Math.max(0, (rating - i) * 100));
+
+            html += `
+            <div class="rev-star">
+                <div class="rev-star-base">${STAR_GRAY}</div>
+                <div class="rev-star-fill" style="width:${percent}%;">
+                    ${STAR_YELLOW}
+                </div>
+            </div>`;
+        }
+
+        return html;
+    }
+
+    async function createStarRatingWidget() {
+        const el = document.querySelector('.revsStarRatingWidget');
+        if (!el) return;
+
+        const brandId = el.dataset.brandid;
+        const productId = el.dataset.productId;
+        const badgeType = el.dataset.badgeType;
+
+        if (!brandId) return;
+
+        const reviews = await fetchReviews({ brandId, productId });
+        if (reviews.length > 0) {
+
+            const avRating = parseFloat(calculateOverallRating(reviews));
+            const tlReviews = reviews.length;
+
+            el.innerHTML = `
+                <div class="revs-badge">
+                    <span class="revs-badge__stars">
+                        ${flexibleStarsHTML(avRating)}
+                    </span>
+
+                    ${
+                        badgeType === 'review_rating'
+                        ? `<span class="revs-review__text">${tlReviews} Review${tlReviews > 1 ? 's' : ''}</span>`
+                        : ``
+                    }
+                </div>`;
+        }
+
+        document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
+    }
+
+    createStarRatingWidget();
+
+
 	setTimeout(function(){
 		document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
 	},1000);
-
-
-    // Add CSS
-    const style = document.createElement("style");
-    if(isBrandWidget){
-        style.innerHTML = `
-            .revsreviewPage__container {
-                width: 90%;
-                max-width: 1200px;
-                margin: 2rem auto;
-            }
-
-            /* Summary Section */
-            .revsreviewPage__summary {
-                display: flex;
-                align-items: flex-start;
-                justify-content: space-between;
-                background: #fff;
-                padding: 20px;
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0,0,0,0.05);
-                flex-wrap: wrap;
-                margin-bottom:30px;
-            }
-            .revsreviewPage__summaryLeft {
-                flex: 0 0 20%;
-                max-width:20%;
-            }
-            .reviewPage__summaryContainer {
-                flex: 0 0 50%;
-                max-width:50%;
-            }
-            .reviewPage__actions {
-                flex: 0 0 20%;
-                max-width: 20%;
-            }
-
-            .revsreviewPage__ratingScore {
-                font-size: 16px;
-                font-weight: 600;
-            }
-
-            .revsreviewPage__bar {
-                display: flex;
-                align-items: center;
-                margin-bottom: 4px;
-                font-size: 0.9rem;
-            }
-
-            .revsreviewPage__progress {
-                flex: 1 1 0;
-                height: 6px;
-                background: #ffbf000f;
-                border-radius: 20px;
-                overflow: hidden;
-                position: relative;
-            }
-
-            .revsreviewPage__progress div.fill {
-                height: 100%;
-                max-width: 100%;
-                background: #FFBF00;
-                border-radius: 20px;
-                transition: width .3s ease;
-                box-sizing: border-box;
-                display: block;
-            }
-
-            .revsreviewPage__btnPrimary {
-                background: black;
-                color: white;
-                border: none;
-                border-radius: 20px;
-                padding: 0.7rem 1.5rem;
-                cursor: pointer;
-                font-weight: 600;
-            }
-            .reviewPage__actionsRight .reviewPage__dropdownWrapper select {
-                padding: 10px 20px;
-                width:100%;
-                font-size: 14px;
-                background: transparent;
-                cursor: pointer;
-                position: relative;
-                z-index: 1;
-                border: 1px solid #eee;
-            }
-            .reviewPage__actionsRight .reviewPage__dropdownWrapper select:focus {
-                outline-offset: 0 !important;
-                outline: 0 !important;
-                box-shadow: none;
-            }
-
-            /* Media Section */
-            .revsreviewPage__media {
-                margin-top: 2rem;
-            }
-
-            .revsreviewPage__photoStrip {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-top: 10px;
-            }
-
-            .revsreviewPage__reviewer span {
-                font-weight: 600;
-                margin-bottom: 4px;
-            }
-            .revsreviewPage__reviewer {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .revsreviewPage__ReviewDate {
-                font-size: 12px;
-                color: #888;
-                margin-bottom: 8px;
-            }
-            .revsreviewPage_reviewTitle h3 {
-                font-size: 16px;
-                margin: 5px 0;
-            }
-            .revsreviewPage__card .revsreviewPage__reviewBody p {
-                margin: 0;
-                font-size: 16px;
-                letter-spacing: 0;
-            }
-
-            .revsreviewPage__summaryBars .revsreviewPage__count {
-                font-size: 14px;
-            }
-
-            .revsreviewPage__photoStrip img {
-                width: 60px;
-                height: 60px;
-                object-fit: cover;
-                border-radius: 5px;
-            }
-
-            .revsreviewPage__moreLink {
-                font-size: 0.9rem;
-                color: #555;
-                text-decoration: none;
-            }
-            .revsreviewPage__cards{
-                margin: 0 auto;
-            }
-            .revsreviewPage__card {
-                width: 320px;
-                margin-bottom: 20px;
-                background: #fff;
-                border-radius: 12px;
-                padding: 18px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
-                transition: transform 0.2s ease;
-            }
-            .revsreviewPage__card:hover { transform: translateY(-4px); }
-
-            .revsreviewPage__cardHeader {
-                text-align: center;
-            }
-
-            .revsreviewPage__verified {
-                background: #000;
-                color: white;
-                font-size: 0.7rem;
-                padding: 2px 6px;
-                border-radius: 10px;
-            }
-
-            .revsreviewPage__image {
-                width: 120px;
-                height: auto;
-                border-radius: 8px;
-                margin-top: 0.5rem;
-            }
-            .revshimmer {
-                position: relative;
-                background: linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%) !important;
-                margin-bottom: 10px !important;
-                background-size: 200% 100%;
-                animation: shimmer 1.5s infinite linear;
-                color: transparent !important;      
-                border-radius: 4px;                
-                border-color: #e3e3e3;
-                box-shadow: none;
-            }
-            /* Hide all images completely */
-            .revshimmer img {
-                opacity:0 !important;
-            }
-
-            /* Shimmer keyframes */
-            @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-            }  
-
-            @keyframes growOut{
-                0% {
-                    opacity: 0;
-                    transform: scale(0.7) translateY(-20px);
-                }
-                100% {
-                    opacity: 1;
-                    transform: scale(1);
-                }
-            }
-            .revsReviewPage__Loader{
-                display:none;
-            }
-            .revsReviewPage__Loader.revShow{
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .revsReviewPage__Loader .revTLoader {
-                width: 48px;
-                height: 48px;
-                display: inline-block;
-                position: relative;
-            }
-            .revsReviewPage__Loader .revTLoader::after,
-            .revsReviewPage__Loader .revTLoader::before {
-                content: '';  
-                box-sizing: border-box;
-                width: 48px;
-                height: 48px;
-                border-radius: 50%;
-                border: 2px solid #1f1f1f;
-                position: absolute;
-                left: 0;
-                top: 0;
-                animation: revanimloader 2s linear infinite;
-            }
-            .revsReviewPage__Loader .revTLoader::after {
-                animation-delay: 1s;
-            }
-
-            @keyframes revanimloader {
-                0% {
-                    transform: scale(0);
-                    opacity: 1;
-                }
-                100% {
-                    transform: scale(1);
-                    opacity: 0;
-                }
-            }
-            @media only screen and (max-width: 991px) {
-                .revsreviewPage__summaryLeft {
-                    flex: 0 0 100%;
-                    max-width: 100%;
-                } 
-                .reviewPage__summaryContainer {
-                    flex: 0 0 60%;
-                    max-width: 60%;
-                }
-                .reviewPage__actions {
-                    flex: 0 0 35%;
-                    max-width: 35%;
-                }
-            }
-            @media only screen and (max-width: 480px) {
-                .reviewPage__actions {
-                    flex: 0 0 100%;
-                    max-width: 100%;
-                    margin-top: 10px;
-                }
-                .reviewPage__summaryContainer {
-                    flex: 0 0 100%;
-                    max-width: 100%;
-                }
-            }
-            @media only screen and (max-width: 360px){
-                .revsreviewPage__container .revsreviewPage__cards {
-                    width: 100%;
-                }
-            }
-            `;  
-    }else{
-        style.innerHTML = `
-            .revs-review-widget { max-width: 1100px; margin: 0 auto; font-family: Arial, sans-serif; }
-            .review-title { font-size: 22px; font-weight: 600; margin-bottom: 20px; text-align: center; }
-            .revsPlaceholderhide{
-                display:none;
-            }
-            .revs-reviews-list { margin: 0 auto; }
-            .revs-reviews-header .revs-reviewsInfoWrap {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .revs-reviewsFilterWrap button#revs-rating-menu-filter {
-                font-size: 16px;
-                border: 1px solid #E8E8E8;
-                border-radius: 4px;
-                height: 40px !important;
-                cursor: pointer;
-                color: #000000;
-                background: none;
-                padding: 8px 6px 2px;
-                width: 37px;
-            }
-            .revs-reviews-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; justify-content: space-between; position: relative; }
-            .revs-reviews-header .revs-review-count { font-weight: 600; font-size: 24px; line-height:24px; color: #333; }
-            .revs-review-widget .revs-reviews-header .revs-rating-stars .star svg {
-                width: 25px;
-                height: 25px;
-            }
-            .revsReviewItem {
-                width: 320px;
-                margin-bottom: 20px;
-                background: #fff;
-                border-radius: 12px;
-                padding: 18px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-                transition: transform 0.2s ease;
-            }
-            .revsReviewItem:hover { transform: translateY(-4px); }
-            .reviewer { font-weight: 600; margin-bottom: 4px; }
-            .revReviewDate { font-size: 12px; color: #888; margin-bottom: 8px; }
-            .revs-rating-stars { display: flex; gap: 4px; margin-bottom: 10px; }
-            .review-body { font-size: 14px; color: #333; line-height: 1.4; }
-            .revs-review-widget-container .revs-dropdown-reviews-summary {
-                max-width: 550px;
-                margin: 30px auto 30px auto;
-            }
-            .revs-review-widget-container .revs-dropdown-review-card {
-                border: .5px solid #0000004D;
-                border-radius: 15px;
-                background: #fff;
-                padding: 30px 20px;
-            } 
-            .revs-review-widget-container .revs-dropdown-reviews-summary .rating-overview p {
-                margin-top: 0;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .rating-bars {
-                display: flex;
-                flex-direction: column;
-                gap: 16px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .rating-bars .bar {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .rating-bars .label {
-                flex: 0 0 66px;
-                white-space: nowrap;
-                color: #000;
-                font-weight: 400;
-                font-size: 14px;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .progress {
-                flex: 1 1 0;
-                height: 20px;
-                background: #ffbf000f;
-                border-radius: 20px;
-                overflow: hidden;
-                position: relative;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .count {
-                flex: 0 0 44px;
-                text-align: right;
-                color: #000;
-                font-weight: 400;
-                font-size: 14px;
-            }
-            .revs-review-widget-container .revs-dropdown-reviews-summary .rating-bars .fill {
-                height: 100%;
-                width: 0%;
-                max-width: 100%;
-                background: #FFBF00;
-                border-radius: 20px;
-                transition: width .3s ease;
-                box-sizing: border-box;
-                display:block;
-            }
-            .revs-review-widget-container .revs-loadMoreWrap {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 15px 0;
-            }
-            .revs-review-widget-container .revs-loadMoreWrap .revs-load-more-btn {
-                background: #000;
-                border: 0;
-                border-radius: 5px;
-                height: 40px;
-                color: #fff;
-                padding: 0 15px;
-                font-size: 14px;
-                cursor: pointer;
-            }
-            .revs-review-widget .revs-reviews-list .revsReviewItem .reviewer {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
-            .revs-review-widget .revs-reviews-list .revsReviewItem .reviewer span {
-                line-height: 0;
-            }
-            .revs-review-widget-container ul.revs-filter-options {
-                width: 250px;
-                margin-top: 4px;
-                text-align: left;
-                position: absolute;
-                padding: 20px 20px 8px;
-                font-size: 14px;
-                list-style: none;
-                background-color: #fff;
-                box-shadow: 0px 6px 14px -4px rgba(0, 0, 0, 0.14);
-                border-radius: 4px;
-                -webkit-box-shadow: 0px 6px 14px -4px rgba(0, 0, 0, 0.14);
-                animation: growOut .2s ease-in-out forwards;
-                transform-origin: 100% 0px;
-                right: 0;
-                top: 40px;
-                z-index:9;
-            }
-            .revs-review-widget-container ul.revs-filter-options li button {
-                border: 0;
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                cursor: pointer;
-                background: none;
-                width: 100%;
-                padding: 0 0 20px 0;
-                color: #000000;
-                font-size:14px;
-            }
-            .revs-review-widget-container ul.revs-filter-options button span {
-                display: none;
-            }
-            .revs-review-widget-container ul.revs-filter-options button span.rev-option-selected {
-                display: block;
-            }
-            .revFlex{
-                display:flex;
-                align-items: center;
-                justify-content: space-between;
-            }
-            .revs-review-widget-container ul.revs-filter-options li.revs-filter-value span.revsSortingTitle {
-                font-weight: 600;
-                font-size: 18px;
-                margin-bottom: 20px;
-                display: block;
-            }
-            .revs-review-widget .revs-reviews-list .revsReviewItem .revReviewTitle h3 {
-                font-size: 16px;
-                margin-bottom: 5px;
-            }
-            .revshimmer {
-                position: relative;
-                background: linear-gradient(90deg,#e0e0e0 25%,#f0f0f0 50%,#e0e0e0 75%) !important;
-                margin-bottom: 10px !important;
-                background-size: 200% 100%;
-                animation: shimmer 1.5s infinite linear;
-                color: transparent !important;      
-                border-radius: 4px;                
-                border-color: #e3e3e3;
-                box-shadow: none;
-            }
-            /* Hide all images completely */
-            .revshimmer img {
-                opacity:0 !important;
-            }
-
-            /* Shimmer keyframes */
-            @keyframes shimmer {
-                0% { background-position: -200% 0; }
-                100% { background-position: 200% 0; }
-            }  
-
-            @keyframes growOut{
-                0% {
-                opacity: 0;
-                transform: scale(0.7) translateY(-20px);
-                }
-                100% {
-                opacity: 1;
-                transform: scale(1);
-                }
-            }
-            @media only screen and (max-width:360px){
-                .revsReviewItem{
-                    width: 100%;
-                }
-            }
-        `;
-    }
-    document.head.appendChild(style);
 
 })();
