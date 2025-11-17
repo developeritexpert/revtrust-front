@@ -152,8 +152,7 @@ export default function BrandsPage() {
     data-product-handle="{{ product.handle }}" 
     data-price="{{ product.price }}" 
     data-product-image="{{ product.selected_or_first_available_variant.featured_image | img_url: 'master' }}">
-  </div>
-  <script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`;
+  </div>`;
   };
 
     // ✅ Open review type modal
@@ -442,8 +441,7 @@ export default function BrandsPage() {
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={500}>Scripts For Review Widgets:</Text>
           <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
-              {`<link rel="stylesheet" href="https://revtrust-front.onrender.com/revs-widget.css">
-              <script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
+              {`<link rel="stylesheet" href="https://revtrust-front.onrender.com/revs-widget.css">\n<script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
           </Code>
           <Text size="sm" c="dimmed">
             <p>Note: Place the above CSS and JS files in your Shopify theme's theme.liquid file to ensure the review widgets function correctly.</p>
@@ -484,7 +482,7 @@ export default function BrandsPage() {
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={600}>Review Page Widget</Text>
           <CopyButton
-            value={`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>\n<script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
+            value={`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>`}
             timeout={2000}
           >
             {({ copied, copy }) => (
@@ -530,7 +528,10 @@ export default function BrandsPage() {
         </Code>
         
          <Text size="sm" c="dimmed">
-          <p>To show the total review count along with the star badge, use <strong>data-badge-type="rating_with_review"</strong>.</p> <p>To show the average rating along with the star badge, use <strong>data-badge-type="rating_with_avgrating"</strong>.</p> <p>To show only the star badge, simply omit the <strong>data-badge-type</strong> attribute.</p> <p>To show only the total review count, use <strong>data-badge-type="review_only"</strong>.</p>
+          <p>To show the total review count along with the star badge, use parameter <strong>data-badge-type="rating_with_review"</strong>.</p> 
+          <p>To show the average rating along with the star badge, use parameter <strong>data-badge-type="rating_with_avgrating"</strong>.</p> 
+          <p>To show only the total review count, use parameter <strong>data-badge-type="review_only"</strong>.</p>
+          <p>To show only the star badge, simply remove the <strong>data-badge-type</strong> attribute from the widget.</p> 
         </Text>
 
       </Box>
