@@ -630,10 +630,10 @@
                 reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span><span class="revs-review__text">${tlReviews} Review${tlReviews > 1 ? 's' : ''}</span>`;
             } else if (badgeType === 'review_only') {
                 reviewTextHTML = `<span class="revs-review__text">${tlReviews} Reviews</span>`;
-            } else if (badgeType === 'rating_only') {
-                reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span>`;
             } else if (badgeType === 'rating_with_avgrating') {
                 reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span><span class="revs-review__text"> ${avRating}</span>`;
+            }else{
+                reviewTextHTML = `<span class="revs-badge__stars">${flexibleStarsHTML(avRating)}</span>`;
             }
 
             el.innerHTML = `
