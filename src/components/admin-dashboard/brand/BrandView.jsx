@@ -473,7 +473,7 @@ export default function BrandsPage() {
         </Code>
       </Box>
 
-      {/* ✅ NEW: Product Page Widget Section */}
+      {/* Review Page Widget Section */}
       <Box mt="md" pt="md" style={{ borderTop: '1px solid #eee' }}>
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={600}>Review Page Widget</Text>
@@ -500,7 +500,7 @@ export default function BrandsPage() {
         </Code>
       </Box>
 
-      {/* ✅ NEW: Star Rating Badge Widget Section */}
+      {/* Star Rating Badge Widget Section */}
       <Box mt="md" pt="md" style={{ borderTop: '1px solid #eee' }}>
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={600}>Star Rating Badge Widget</Text>
@@ -523,11 +523,13 @@ export default function BrandsPage() {
           {`<div class="revsStarRatingWidget" data-brandid="${selectedBrand._id}" data-product-id="{{product.id}}"></div>`}
         </Code>
         
-         <Text size="sm" c="dimmed">
-          <p>To show the total review count along with the star badge, use parameter <strong>data-badge-type="rating_with_review"</strong>.</p> 
-          <p>To show the average rating along with the star badge, use parameter <strong>data-badge-type="rating_with_avgrating"</strong>.</p> 
-          <p>To show only the total review count, use parameter <strong>data-badge-type="review_only"</strong>.</p>
-          <p>To show only the star badge, simply remove the <strong>data-badge-type</strong> attribute from the widget.</p> 
+        <Text size="sm" c="dimmed">
+          <ol style={{ marginTop: '8px', paddingLeft: '20px' }}>
+            <li>To show the total review count along with the star badge, use parameter <strong>data-badge-type="rating_with_review"</strong>.</li>
+            <li>To show the average rating along with the star badge, use parameter <strong>data-badge-type="rating_with_avgrating"</strong>.</li> 
+            <li>To show only the total review count, use parameter <strong>data-badge-type="review_only"</strong>.</li>
+            <li>To show only the star badge, simply remove the <strong>data-badge-type</strong> attribute from the widget.</li> 
+          </ol>
         </Text>
 
       </Box>
