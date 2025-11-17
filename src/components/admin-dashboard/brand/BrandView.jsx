@@ -447,10 +447,6 @@ export default function BrandsPage() {
             <p>Note: Place the above CSS and JS files in your Shopify theme's theme.liquid file to ensure the review widgets function correctly.</p>
           </Text>
         </Group>
-
-        <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
-          {generateEmbedCode(selectedBrand._id)}
-        </Code>
       </Box>
 
       {/* Existing Shopify Embed Code Section */}
@@ -508,7 +504,7 @@ export default function BrandsPage() {
       <Box mt="md" pt="md" style={{ borderTop: '1px solid #eee' }}>
         <Group justify="space-between" mb="xs">
           <Text size="sm" fw={600}>Star Rating Badge Widget</Text>
-          <CopyButton value={`<div class="revsStarRatingWidget" data-brandid="${selectedBrand._id}" data-product-id="{{product.id}}" data-badge-type="rating_with_review"></div>`} timeout={2000}>
+          <CopyButton value={`<div class="revsStarRatingWidget" data-brandid="${selectedBrand._id}" data-product-id="{{product.id}}"></div>`} timeout={2000}>
             {({ copied, copy }) => (
               <Button
                 size="xs"
