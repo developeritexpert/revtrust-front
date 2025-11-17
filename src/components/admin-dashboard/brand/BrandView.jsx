@@ -437,6 +437,24 @@ export default function BrandsPage() {
         </Group>
       </Box>
 
+      {/* Existing Shopify JS CSS Files */}
+      <Box>
+        <Group justify="space-between" mb="xs">
+          <Text size="sm" fw={500}>Scripts For Review Widgets:</Text>
+          <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
+              {`<link rel="stylesheet" href="https://revtrust-front.onrender.com/revs-widget.css">
+              <script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
+          </Code>
+          <Text size="sm" c="dimmed">
+            <p>Note: Place the above CSS and JS files in your Shopify theme's theme.liquid file to ensure the review widgets function correctly.</p>
+          </Text>
+        </Group>
+
+        <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
+          {generateEmbedCode(selectedBrand._id)}
+        </Code>
+      </Box>
+
       {/* Existing Shopify Embed Code Section */}
       <Box>
         <Group justify="space-between" mb="xs">
@@ -484,9 +502,37 @@ export default function BrandsPage() {
         </Group>
 
         <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
-{`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>
-<script src="https://revtrust-front.onrender.com/revs-widget.js" defer></script>`}
+          {`<div id="revsBrandReviewWidget" data-brandid="${selectedBrand._id}"></div>`}
         </Code>
+      </Box>
+
+      {/* ✅ NEW: Star Rating Badge Widget Section */}
+      <Box mt="md" pt="md" style={{ borderTop: '1px solid #eee' }}>
+        <Group justify="space-between" mb="xs">
+          <Text size="sm" fw={600}>Star Rating Badge Widget</Text>
+          <CopyButton value={`<div class="revsStarRatingWidget" data-brandid="${selectedBrand._id}" data-product-id="{{product.id}}" data-badge-type="rating_with_review"></div>`} timeout={2000}>
+            {({ copied, copy }) => (
+              <Button
+                size="xs"
+                variant="light"
+                color={copied ? 'teal' : 'blue'}
+                leftSection={copied ? <IconCheck size={16} /> : <IconCopy size={16} />}
+                onClick={copy}
+              >
+                {copied ? 'Copied!' : 'Copy Code'}
+              </Button>
+            )}
+          </CopyButton>
+        </Group>
+
+        <Code block p="md" style={{ fontSize: '12px', lineHeight: '1.6' }}>
+          {`<div class="revsStarRatingWidget" data-brandid="${selectedBrand._id}" data-product-id="{{product.id}}"></div>`}
+        </Code>
+        
+         <Text size="sm" c="dimmed">
+          <p>To show the total review count along with the star badge, use <strong>data-badge-type="rating_with_review"</strong>.</p> <p>To show the average rating along with the star badge, use <strong>data-badge-type="rating_with_avgrating"</strong>.</p> <p>To show only the star badge, simply omit the <strong>data-badge-type</strong> attribute.</p> <p>To show only the total review count, use <strong>data-badge-type="review_only"</strong>.</p>
+        </Text>
+
       </Box>
 
       <Box>
