@@ -34,7 +34,7 @@ export async function POST(req) {
 export async function OPTIONS() {
   const headers = {
     'Access-Control-Allow-Origin': '*', // You can restrict to your Shopify domain
-    'Access-Control-Allow-Methods': 'GET,OPTIONS',
+    'Access-Control-Allow-Methods': 'GET,POST,OPTIONS',
     'Access-Control-Allow-Headers': 'Content-Type'
   };
   return new Response(null, { status: 204, headers });
