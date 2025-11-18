@@ -18,6 +18,18 @@ export async function GET(req) {
   return new Response(JSON.stringify({ data: brands }), { status: 200, headers });
 }
 
+export async function POST(req) {
+  const body = await req.json(); // Parse POST JSON body
+
+  const {  name, email, postcode, websiteUrl, logoUrl } = body || {};
+
+  const brand = await addBrand({  name, email, postcode, websiteUrl, logoUrl });
+
+  const headers = corsHeaders();
+
+  return new Response(JSON.stringify({ data: brand }), { status: 200, headers });
+}
+
 // Handle OPTIONS requests (required for preflight requests in browsers)
 export async function OPTIONS() {
   const headers = {
