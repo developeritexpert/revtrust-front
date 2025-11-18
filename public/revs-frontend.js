@@ -18,8 +18,5 @@
         const data = await res.json();
         return data?.data || [];
     }
-
-
-    console.log(fetchBrands('a'))
-
+    
 })();
