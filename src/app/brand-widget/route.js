@@ -24,22 +24,32 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
-  const body = await req.json();
+  try {
+    const body = await req.json();
 
-  const { name, email, postcode, websiteUrl, logoUrl } = body || {};
+    const { name, email, postcode, websiteUrl, logoUrl } = body || {};
 
-  const brand = await addBrand({
-    name,
-    email,
-    postcode,
-    websiteUrl,
-    logoUrl,
-  });
+    const brand = await addBrand({
+      name,
+      email,
+      postcode,
+      websiteUrl,
+      logoUrl,
+    });
 
-  return new Response(
-    JSON.stringify({ data: brand }),
-    { status: 200, headers: corsHeaders() }
-  );
+    return new Response(
+      JSON.stringify({ data: brand }),
+      { status: 200, headers: corsHeaders() }
+    );
+
+  } catch (error) {
+    console.error("Request failed:", error);
+
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: corsHeaders() }
+    );
+  }
 }
 
 // Required for CORS preflight (POST with JSON)
