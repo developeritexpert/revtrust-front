@@ -25,17 +25,8 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const body = await req.json();
-
-    const { name, email, postcode, websiteUrl, logoUrl } = body || {};
-
-    const brand = await addBrand({
-      name,
-      email,
-      postcode,
-      websiteUrl,
-      logoUrl,
-    });
+    const formData = await req.formData();
+    const brand = await addBrand(formData); // pass original formdata
 
     return new Response(
       JSON.stringify({ data: brand }),
@@ -44,7 +35,6 @@ export async function POST(req) {
 
   } catch (error) {
     console.error("Request failed:", error);
-
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: corsHeaders() }
