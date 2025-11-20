@@ -1,33 +1,52 @@
 import { getReviews } from '../../../lib/reviewService';
 
+// Reusable CORS headers
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": "*", // replace * with Shopify domain if needed
+    "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
+
 export async function GET(req) {
   const { searchParams } = new URL(req.url);
 
   const brandId = searchParams.get("brandId");
-  const productId = searchParams.get("productId");
-  const sortBy = searchParams.get("sortBy");
-  const order = searchParams.get("order");
-  const page = searchParams.get("page");
-  const limit = searchParams.get("limit");
+  const name = searchParams.get("name");
 
-  const reviews = await getReviews({ brandId, productId, sortBy, order, page, limit });
+  const brands = await getBrands({ brandId, name });
 
-  // CORS headers
-  const headers = {
-    'Access-Control-Allow-Origin': '*', // You can replace '*' with your Shopify domain
-    'Access-Control-Allow-Methods': 'GET,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
-
-  return new Response(JSON.stringify({ data: reviews }), { status: 200, headers });
+  return new Response(
+    JSON.stringify({ data: brands }),
+    { status: 200, headers: corsHeaders() }
+  );
 }
 
-// Handle OPTIONS requests (required for preflight requests in browsers)
+export async function POST(req) {
+  try {
+    const formData = await req.formData();
+    const brand = await addBrand(formData); // pass original formdata
+
+    return new Response(
+      JSON.stringify({ data: brand }),
+      { status: 200, headers: corsHeaders() }
+    );
+
+  } catch (error) {
+    console.error("Request failed:", error);
+    return new Response(
+      JSON.stringify({ error: error.message }),
+      { status: 500, headers: corsHeaders() }
+    );
+  }
+}
+
+// Required for CORS preflight (POST with JSON)
 export async function OPTIONS() {
-  const headers = {
-    'Access-Control-Allow-Origin': '*', // You can restrict to your Shopify domain
-    'Access-Control-Allow-Methods': 'GET,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type'
-  };
-  return new Response(null, { status: 204, headers });
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders(),
+  });
 }
+
