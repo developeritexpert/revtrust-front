@@ -1,4 +1,4 @@
-import { getBrands, addBrand } from '../../../lib/brandService';
+import * as brandService from '../../../lib/brandService';
 
 // Reusable CORS headers
 function corsHeaders() {
@@ -15,7 +15,7 @@ export async function GET(req) {
   const brandId = searchParams.get("brandId");
   const name = searchParams.get("name");
 
-  const brands = await getBrands({ brandId, name });
+  const brands = await brandService.getBrands({ brandId, name });
 
   return new Response(
     JSON.stringify({ data: brands }),
@@ -26,7 +26,7 @@ export async function GET(req) {
 export async function POST(req) {
   try {
     const formData = await req.formData();
-    const brand = await addBrand(formData); // pass original formdata
+    const brand = await brandService.addBrand(formData); // pass original formdata
 
     return new Response(
       JSON.stringify({ data: brand }),
