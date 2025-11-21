@@ -10,17 +10,35 @@ function corsHeaders() {
 }
 
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
+  try {
+    const { searchParams } = new URL(req.url);
 
-  const brandId = searchParams.get("brandId");
-  const name = searchParams.get("name");
+    const brandId = searchParams.get("brandId");
+    const name = searchParams.get("name");
 
-  const brands = await brandService.getBrands({ brandId, name });
+    // If brandId is provided → fetch single brand
+    if (brandId) {
+      const brandById = await brandService.getBrandById(brandId);
+      return new Response(
+        JSON.stringify({ data: brandById }),
+        { status: 200, headers: corsHeaders() }
+      );
+    }
 
-  return new Response(
-    JSON.stringify({ data: brands }),
-    { status: 200, headers: corsHeaders() }
-  );
+    // Otherwise fetch multiple brands (optionally filtered by name)
+    const brands = await brandService.getBrands({ name });
+    return new Response(
+      JSON.stringify({ data: brands }),
+      { status: 200, headers: corsHeaders() }
+    );
+
+  } catch (error) {
+    console.error("GET /brands error:", error);
+    return new Response(
+      JSON.stringify({ error: "Internal Server Error" }),
+      { status: 500, headers: corsHeaders() }
+    );
+  }
 }
 
 export async function POST(req) {
