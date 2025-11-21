@@ -3,35 +3,49 @@ import * as reviewService from '../../../lib/reviewService';
 // Reusable CORS headers
 function corsHeaders() {
   return {
-    "Access-Control-Allow-Origin": "*", // replace * with Shopify domain if needed
+    "Access-Control-Allow-Origin": "*", 
     "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Headers": "*", // IMPORTANT: allow all headers for FormData
+    "Access-Control-Max-Age": "86400"
   };
 }
 
+// ---------------------- GET ----------------------
 export async function GET(req) {
-  const { searchParams } = new URL(req.url);
+  try {
+    const { searchParams } = new URL(req.url);
 
-  const brandId = searchParams.get("brandId");
-  const productId = searchParams.get("productId");
-  const sortBy = searchParams.get("sortBy");
-  const order = searchParams.get("order");
-  const page = searchParams.get("page");
-  const limit = searchParams.get("limit");
-  const status = searchParams.get("status");
+    const brandId = searchParams.get("brandId");
+    const productId = searchParams.get("productId");
+    const sortBy = searchParams.get("sortBy");
+    const order = searchParams.get("order");
+    const page = searchParams.get("page");
+    const limit = searchParams.get("limit");
+    const status = searchParams.get("status");
 
-  const reviews = await reviewService.getReviews({ brandId, productId, sortBy, order, page, limit, status });
+    const reviews = await reviewService.getReviews({
+      brandId, productId, sortBy, order, page, limit, status
+    });
 
-  return new Response(
-    JSON.stringify({ data: reviews }),
-    { status: 200, headers: corsHeaders() }
-  );
+    return new Response(
+      JSON.stringify({ data: reviews }),
+      { status: 200, headers: corsHeaders() }
+    );
+
+  } catch (err) {
+    console.error("GET /review-widget error:", err);
+    return new Response(
+      JSON.stringify({ error: "Internal Server Error" }),
+      { status: 500, headers: corsHeaders() }
+    );
+  }
 }
 
+// ---------------------- POST ----------------------
 export async function POST(req) {
   try {
     const formData = await req.formData();
-    const review = await reviewService.addReview(formData); // pass original formdata
+    const review = await reviewService.addReview(formData);
 
     return new Response(
       JSON.stringify({ data: review }),
@@ -39,7 +53,7 @@ export async function POST(req) {
     );
 
   } catch (error) {
-    console.error("Request failed:", error);
+    console.error("POST /review-widget error:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
       { status: 500, headers: corsHeaders() }
@@ -47,7 +61,7 @@ export async function POST(req) {
   }
 }
 
-// Required for CORS preflight (POST with JSON)
+// ---------------------- OPTIONS (CORS Preflight) ----------------------
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
