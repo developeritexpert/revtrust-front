@@ -95,6 +95,7 @@
             return 0;
         }
     }
+    
 
     function generateDynamicRatingBlock(reviews, totalreviews) {
         if(isBrandWidget){
