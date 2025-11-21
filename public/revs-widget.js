@@ -55,6 +55,7 @@
 		const res = await fetch(url.toString());
 		if (!res.ok) throw new Error("Failed to fetch reviews");
 		const data = await res.json();
+        return data?.data || [];
 	}
 
     async function fetchReviewsTotal({ brandId, productId }) {
@@ -79,7 +80,7 @@
             let totalReviews = 0;
             // Make sure the response structure is valid
             if (data?.data) {
-                totalReviews = data.data;
+                totalReviews = data.data.reviews;
             }
 
             // Only set if parentContainer exists and totalReviews is a valid number
@@ -467,6 +468,8 @@
                 const { sortBy, order } = sortMapping[currentSort] || {};
                 const data = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
                 const reviews = data?.reviews || [];    
+
+                console.log(data);
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
                     reviewsList.innerHTML = `<p>No reviews yet.</p>`;
