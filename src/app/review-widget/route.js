@@ -9,8 +9,9 @@ export async function GET(req) {
   const order = searchParams.get("order");
   const page = searchParams.get("page");
   const limit = searchParams.get("limit");
+  const status = searchParams.get("status");
 
-  const reviews = await getReviews({ brandId, productId, sortBy, order, page, limit });
+  const reviews = await getReviews({ brandId, productId, sortBy, order, page, limit, status });
 
   // CORS headers
   const headers = {
