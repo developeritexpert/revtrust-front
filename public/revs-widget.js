@@ -55,7 +55,6 @@
 		const res = await fetch(url.toString());
 		if (!res.ok) throw new Error("Failed to fetch reviews");
 		const data = await res.json();
-		return data?.data || [];
 	}
 
     async function fetchReviewsTotal({ brandId, productId }) {
@@ -321,7 +320,8 @@
 
                 const { sortBy, order } = sortMapping[currentSort] || {};
 
-                const reviews = await fetchReviews({ brandId, sortBy, order, page: currentPage, limit: pageSize });
+                const data = await fetchReviews({ brandId, sortBy, order, page: currentPage, limit: pageSize });
+                const reviews = data?.reviews || [];
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
                     reviewsList.innerHTML = "<p>No reviews yet.</p>";
@@ -465,7 +465,8 @@
                 };
 
                 const { sortBy, order } = sortMapping[currentSort] || {};
-                const reviews = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
+                const data = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
+                const reviews = data?.reviews || [];    
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
                     reviewsList.innerHTML = `<p>No reviews yet.</p>`;
@@ -618,7 +619,9 @@
 
         if (!brandId) return;
 
-        const reviews = await fetchReviews({ brandId, productId });
+        const data = await fetchReviews({ brandId, productId });
+        const reviews = data?.reviews || [];
+        
         if (reviews.length > 0) {
 
             const avRating = parseFloat(calculateOverallRating(reviews));
