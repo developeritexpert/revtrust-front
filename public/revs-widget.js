@@ -12,12 +12,13 @@
     const isBrandWidget = document.querySelector('#revsBrandReviewWidget') !== null;
 
 	function createReviewCard(r) {
+        console.log(r);
 		const rating = Math.round(Number(r.product_store_rating) || 0);
 		const date = new Date(r.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
         if(isBrandWidget){
-            return `<div class="revsreviewPage__card"><div class="revsreviewPage__reviewer"><span class="revshimmer">${r.name || "Anonymous"}</span><span class="revshimmer"><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0 { fill: #000000 }</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revsreviewPage__ReviewDate revshimmer">${date}</div><div class="revsreviewPage__stars revshimmer">${starsHTML(rating)}</div><div class="revsreviewPage_reviewTitle"><h3 class="revshimmer">${r.reviewTitle}</h3></div><div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewContent || ""}</p></div></div>`;
+            return `<div class="revsreviewPage__card"><div class="revsreviewPage__reviewer"><span class="revshimmer">${r.reviewerName || "Anonymous"}</span><span class="revshimmer"><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0 { fill: #000000 }</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revsreviewPage__ReviewDate revshimmer">${date}</div><div class="revsreviewPage__stars revshimmer">${starsHTML(rating)}</div><div class="revsreviewPage_reviewTitle"><h3 class="revshimmer">${r.reviewTitle}</h3></div><div class="revsreviewPage__reviewBody"><p class="revshimmer">${r.reviewContent || ""}</p></div></div>`;
         }else{
-            return `<div class="revsReviewItem"><div class="reviewer"><span>${r.name || "Anonymous"}</span><span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0{fill:#000000}</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revReviewDate">${date}</div><div class="revs-rating-stars">${starsHTML(rating)}</div><div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div><div class="review-body">${r.reviewContent || ""}</div></div>`;
+            return `<div class="revsReviewItem"><div class="reviewer"><span>${r.reviewerName || "Anonymous"}</span><span><svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" width="20" height="20"><style>.s0{fill:#000000}</style><g><path class="s0" d="m19.62 11.01c-0.33-0.64-0.33-1.4 0-2.04 0.53-1.03 0.19-2.29-0.78-2.91-0.6-0.39-0.98-1.05-1.02-1.77-0.06-1.15-0.98-2.07-2.13-2.13-0.72-0.04-1.38-0.42-1.77-1.02-0.63-0.97-1.88-1.31-2.91-0.78-0.64 0.32-1.4 0.32-2.04 0-1.03-0.53-2.29-0.19-2.91 0.78-0.39 0.6-1.05 0.98-1.77 1.02-1.15 0.06-2.07 0.98-2.13 2.13-0.04 0.72-0.42 1.38-1.02 1.77-0.97 0.62-1.31 1.88-0.78 2.9 0.32 0.65 0.32 1.41 0 2.05-0.53 1.03-0.19 2.28 0.78 2.91 0.6 0.39 0.98 1.05 1.02 1.77 0.06 1.15 0.98 2.07 2.13 2.13 0.72 0.04 1.38 0.42 1.77 1.02 0.62 0.97 1.88 1.3 2.9 0.78 0.65-0.33 1.41-0.33 2.05 0 1.03 0.52 2.28 0.19 2.91-0.78 0.39-0.6 1.05-0.98 1.77-1.02 1.15-0.06 2.07-0.98 2.13-2.13 0.04-0.72 0.42-1.38 1.02-1.77 0.97-0.63 1.3-1.88 0.78-2.91zm-11.4 3.65l-4.27-4.26 2.13-2.13 2.14 2.14 5.08-5.1 2.14 2.13z"/></g></svg></span></div><div class="revReviewDate">${date}</div><div class="revs-rating-stars">${starsHTML(rating)}</div><div class="revReviewTitle"><h3>${r.reviewTitle}</h3></div><div class="review-body">${r.reviewContent || ""}</div></div>`;
         }
 	}
 
@@ -214,17 +215,16 @@
 
         let totalReviewsCount = 0; let totalReviewsAvailable = [];
        
-
         if (container) {
             const brandId = container.dataset.brandid;
             const productId = container.dataset.productId;
 
-            if (brandId) { // Make sure brandId exists
-                if (productId) {
-                    totalReviewsAvailable = await fetchReviewsTotal({ brandId, productId });
-                } else {
-                    totalReviewsAvailable = await fetchReviewsTotal({ brandId });
-                }
+            if (productId && brandId) {
+                totalReviewsAvailable = await fetchReviewsTotal({ brandId, productId });
+            } else if(!productId && brandId) {
+                totalReviewsAvailable = await fetchReviewsTotal({ brandId });
+            }else{
+                totalReviewsAvailable = await fetchReviewsTotal({ brandId });
             }
         }
 
@@ -324,6 +324,9 @@
 
                 const data = await fetchReviews({ brandId, sortBy, order, page: currentPage, limit: pageSize });
                 const reviews = data?.reviews || [];
+
+                const data1 = await fetchReviews({ brandId});
+                const reviews1 = data1?.reviews || [];
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
                     reviewsList.innerHTML = "<p>No reviews yet.</p>";
@@ -470,7 +473,8 @@
                 const data = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
                 const reviews = data?.reviews || [];    
 
-                console.log(data);
+                const data1 = await fetchReviews({ brandId, productId });
+                const reviews1 = data1?.reviews || []; 
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
                     reviewsList.innerHTML = `<p>No reviews yet.</p>`;
@@ -481,14 +485,16 @@
 
                 reviewsList.insertAdjacentHTML("beforeend", reviews.map(createReviewCard).join(""));
                 totalReviewsLoaded += reviews.length;
+
+                totalReviewsInProduct = reviews1.length;
                 
                 // Show Load More only if there are more reviews
                 loadMoreBtn.style.display = totalReviewsLoaded < totalReviewsCount ? "block" : "none";
 
                 initMasonry(reviewsList);
-                reviewCountEl.textContent = `${totalReviewsLoaded} Review${totalReviewsLoaded > 1 ? 's' : ''}`;
+                reviewCountEl.textContent = `${totalReviewsInProduct} Review${totalReviewsInProduct > 1 ? 's' : ''}`;
                 if(reviewsCard){
-                    reviewsCard.innerHTML = generateDynamicRatingBlock(reviews, totalReviewsLoaded);
+                    reviewsCard.innerHTML = generateDynamicRatingBlock(reviews1, totalReviewsInProduct);
                 }
                 document.querySelectorAll('.revshimmer').forEach(el => el.classList.remove('revshimmer'));
             }
