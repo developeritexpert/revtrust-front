@@ -118,7 +118,7 @@
                 review.product_price_rating,
                 review.issue_handling_rating
                 ].filter(r => typeof r === 'number' && r > 0);
-
+                
                 const reviewAverage = ratings.length ? ratings.reduce((sum,r)=>sum+r,0)/ratings.length : 0;
                 if (reviewAverage > 0) {
                     const rounded = Math.round(reviewAverage);
@@ -159,18 +159,18 @@
 
             let ratingBarsHTML = '';
             for (let i = 5; i >= 1; i--) {
-            const count = ratingCounts[i] || 0; // safely handle missing keys
-            const percent = totalReviews ? ((count / totalReviews) * 100).toFixed(1) : 0;
+                const count = ratingCounts[i] || 0; // safely handle missing keys
+                const percent = totalReviews ? ((count / totalReviews) * 100).toFixed(1) : 0;
 
-            ratingBarsHTML += `
-                <div class="revsreviewPage__bar">
-                ${stars(i)}
-                <div class="revsreviewPage__progress">
-                    <div class="fill" style="width:${percent}%"></div>
-                </div>
-                <span class="revsreviewPage__count">${count}</span>
-                </div>
-            `;
+                ratingBarsHTML += `
+                    <div class="revsreviewPage__bar">
+                    ${stars(i)}
+                    <div class="revsreviewPage__progress">
+                        <div class="fill" style="width:${percent}%"></div>
+                    </div>
+                    <span class="revsreviewPage__count">${count}</span>
+                    </div>
+                `;
             }
 
             return `<div class="revsreviewPage__summaryBars">${ratingBarsHTML}</div>`;
@@ -325,7 +325,7 @@
                 const data = await fetchReviews({ brandId, sortBy, order, page: currentPage, limit: pageSize });
                 const reviews = data?.reviews || [];
 
-                const data1 = await fetchReviews({ brandId});
+                const data1 = await fetchReviews({ brandId, reviewStatus: "ACTIVE" });
                 const reviews1 = data1?.reviews || [];
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
@@ -344,7 +344,7 @@
                 loaderEl.classList.remove("revShow");
 
                 const reviewsCard = container.querySelector(".reviewPage__summaryContainer");
-                reviewsCard.innerHTML = generateDynamicRatingBlock(totalReviewsAvailable, totalReviewsCount);
+                reviewsCard.innerHTML = generateDynamicRatingBlock(reviews1, totalReviewsCount);
 
                 initMasonry(reviewsList);
                 isLoading = false;
@@ -473,7 +473,7 @@
                 const data = await fetchReviews({ brandId, productId, sortBy, order, page: currentPage, limit: pageSize });
                 const reviews = data?.reviews || [];    
 
-                const data1 = await fetchReviews({ brandId, productId });
+                const data1 = await fetchReviews({ brandId, productId, reviewStatus: "ACTIVE" });
                 const reviews1 = data1?.reviews || []; 
 
                 if (!reviews.length && totalReviewsLoaded === 0) {
