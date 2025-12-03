@@ -249,39 +249,39 @@ export default function BrandsPage() {
       )
     },
     
-    {
-      key: 'email',
-      header: 'Email',
-      accessor: 'email',
-      render: (item) => (
-        <Group gap={6}>
-          <IconMail size={14} opacity={0.6} />
-          <Text size="sm">{item.email || '-'}</Text>
-        </Group>
-      )
-    },
-    {
-      key: 'phone',
-      header: 'Phone',
-      accessor: 'phoneNumber',
-      render: (item) => (
-        <Group gap={6}>
-          <IconPhone size={14} opacity={0.6} />
-          <Text size="sm">{item.phoneNumber || '-'}</Text>
-        </Group>
-      )
-    },
-    {
-      key: 'postcode',
-      header: 'Postcode',
-      accessor: 'postcode',
-      render: (item) => (
-        <Group gap={6}>
-          <IconMapPin size={14} opacity={0.6} />
-          <Text size="sm">{item.postcode || '-'}</Text>
-        </Group>
-      )
-    },
+    // {
+    //   key: 'email',
+    //   header: 'Email',
+    //   accessor: 'email',
+    //   render: (item) => (
+    //     <Group gap={6}>
+    //       <IconMail size={14} opacity={0.6} />
+    //       <Text size="sm">{item.email || '-'}</Text>
+    //     </Group>
+    //   )
+    // },
+    // {
+    //   key: 'phone',
+    //   header: 'Phone',
+    //   accessor: 'phoneNumber',
+    //   render: (item) => (
+    //     <Group gap={6}>
+    //       <IconPhone size={14} opacity={0.6} />
+    //       <Text size="sm">{item.phoneNumber || '-'}</Text>
+    //     </Group>
+    //   )
+    // },
+    // {
+    //   key: 'postcode',
+    //   header: 'Postcode',
+    //   accessor: 'postcode',
+    //   render: (item) => (
+    //     <Group gap={6}>
+    //       <IconMapPin size={14} opacity={0.6} />
+    //       <Text size="sm">{item.postcode || '-'}</Text>
+    //     </Group>
+    //   )
+    // },
     // ✅ NEW: Embed Code Column
     {
       key: 'embedCode',
@@ -323,27 +323,27 @@ export default function BrandsPage() {
       type: 'text',
       placeholder: 'Search by brand name...',
     },
-    {
-      key: 'email',
-      label: 'Email',
-      type: 'text',
-      placeholder: 'Search by email...',
-      icon: <IconMail size={16} />
-    },
-    {
-      key: 'phoneNumber',
-      label: 'Phone',
-      type: 'text',
-      placeholder: 'Search by phone...',
-      icon: <IconPhone size={16} />
-    },
-    {
-      key: 'postcode',
-      label: 'Postcode',
-      type: 'text',
-      placeholder: 'Search by postcode...',
-      icon: <IconMapPin size={16} />
-    },
+    // {
+    //   key: 'email',
+    //   label: 'Email',
+    //   type: 'text',
+    //   placeholder: 'Search by email...',
+    //   icon: <IconMail size={16} />
+    // },
+    // {
+    //   key: 'phoneNumber',
+    //   label: 'Phone',
+    //   type: 'text',
+    //   placeholder: 'Search by phone...',
+    //   icon: <IconPhone size={16} />
+    // },
+    // {
+    //   key: 'postcode',
+    //   label: 'Postcode',
+    //   type: 'text',
+    //   placeholder: 'Search by postcode...',
+    //   icon: <IconMapPin size={16} />
+    // },
     {
       key: 'status',
       label: 'Status',

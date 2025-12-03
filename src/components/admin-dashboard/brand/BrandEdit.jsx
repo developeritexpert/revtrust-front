@@ -67,39 +67,39 @@ export default function EditBrand() {
       icon: <IconBuildingStore size={16} />,
       span: 6,
     },
-    {
-      name: 'email',
-      label: 'Email Address',
-      type: 'email',
-      placeholder: 'brand@example.com',
-      required: true,
-      icon: <IconMail size={16} />,
-      span: 6,
-      validate: (value) => {
-        if (value && !/^\S+@\S+$/.test(value)) {
-          return 'Invalid email format';
-        }
-        return null;
-      },
-    },
-    {
-      name: 'phoneNumber',
-      label: 'Phone Number',
-      type: 'text',
-      placeholder: '+1234567890',
-      required: true,
-      icon: <IconPhone size={16} />,
-      span: 6,
-    },
-    {
-      name: 'postcode',
-      label: 'Postcode',
-      type: 'text',
-      placeholder: 'Enter postcode',
-      required: true,
-      icon: <IconMapPin size={16} />,
-      span: 6,
-    },
+    // {
+    //   name: 'email',
+    //   label: 'Email Address',
+    //   type: 'email',
+    //   placeholder: 'brand@example.com',
+    //   required: true,
+    //   icon: <IconMail size={16} />,
+    //   span: 6,
+    //   validate: (value) => {
+    //     if (value && !/^\S+@\S+$/.test(value)) {
+    //       return 'Invalid email format';
+    //     }
+    //     return null;
+    //   },
+    // },
+    // {
+    //   name: 'phoneNumber',
+    //   label: 'Phone Number',
+    //   type: 'text',
+    //   placeholder: '+1234567890',
+    //   required: true,
+    //   icon: <IconPhone size={16} />,
+    //   span: 6,
+    // },
+    // {
+    //   name: 'postcode',
+    //   label: 'Postcode',
+    //   type: 'text',
+    //   placeholder: 'Enter postcode',
+    //   required: true,
+    //   icon: <IconMapPin size={16} />,
+    //   span: 6,
+    // },
     {
       name: 'description',
       label: 'Description',
@@ -147,7 +147,7 @@ export default function EditBrand() {
       options: [
         { value: 'ACTIVE', label: 'Active' },
         { value: 'INACTIVE', label: 'Inactive' },
-        { value: 'PENDING', label: 'Pending' },
+   
       ],
       span: 6,
     },
