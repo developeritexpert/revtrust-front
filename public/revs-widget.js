@@ -537,6 +537,7 @@
 
       if (loadedNow) maybeFillRow();
     }
+    
 
     loadMoreBtn.addEventListener("click", () => {
       currentPage++;
